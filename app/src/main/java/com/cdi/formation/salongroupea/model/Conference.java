@@ -7,7 +7,7 @@ import java.util.List;
  */
 
 public class Conference {
-    private String titre;
+    private String title;
     private String description;
     private String theme;
     private String day;
@@ -15,15 +15,15 @@ public class Conference {
     private String location;
     private String latitude;
     private String longitude;
-    Utilisateur Speaker;
-    List<Utilisateur> attendents;
+    User Speaker;
+    List<User> attendents;
     List<Comment> comments;
 
     public Conference() {
     }
 
-    public Conference(String titre, String description, String theme, String day, String startHour, String location, String latitude, String longitude, Utilisateur speaker, List<Utilisateur> attendents, List<Comment> comments) {
-        this.titre = titre;
+    public Conference(String title, String description, String theme, String day, String startHour, String location, String latitude, String longitude, User speaker, List<User> attendents, List<Comment> comments) {
+        this.title = title;
         this.description = description;
         this.theme = theme;
         this.day = day;
@@ -36,12 +36,12 @@ public class Conference {
         this.comments = comments;
     }
 
-    public String getTitre() {
-        return titre;
+    public String getTitle() {
+        return title;
     }
 
-    public Conference setTitre(String titre) {
-        this.titre = titre;
+    public Conference setTitle(String title) {
+        this.title = title;
         return this;
     }
 
@@ -108,20 +108,20 @@ public class Conference {
         return this;
     }
 
-    public Utilisateur getSpeaker() {
+    public User getSpeaker() {
         return Speaker;
     }
 
-    public Conference setSpeaker(Utilisateur speaker) {
+    public Conference setSpeaker(User speaker) {
         Speaker = speaker;
         return this;
     }
 
-    public List<Utilisateur> getAttendents() {
+    public List<User> getAttendents() {
         return attendents;
     }
 
-    public Conference setAttendents(List<Utilisateur> attendents) {
+    public Conference setAttendents(List<User> attendents) {
         this.attendents = attendents;
         return this;
     }

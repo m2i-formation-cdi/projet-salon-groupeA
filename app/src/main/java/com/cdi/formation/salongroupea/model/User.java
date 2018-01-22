@@ -4,38 +4,38 @@ package com.cdi.formation.salongroupea.model;
  * Created by Formation on 22/01/2018.
  */
 
-public class Utilisateur {
+public class User {
     private String name;
     private String firstName;
     private String email;
     private String id;
-    private String isAdmin = "user";
+    private Boolean isAdmin = false;
 
-    public Utilisateur() {
+    public User() {
     }
 
-    public Utilisateur(String nom, String prenom, String email, String id, String isAdmin) {
-        this.name = nom;
-        this.firstName = prenom;
+    public User(String name, String firstName, String email, String id, Boolean isAdmin) {
+        this.name = name;
+        this.firstName = firstName;
         this.email = email;
         this.id = id;
         this.isAdmin = isAdmin;
     }
 
-    public String getNom() {
+    public String getName() {
         return name;
     }
 
-    public Utilisateur setNom(String name) {
+    public User setName(String name) {
         this.name = name;
         return this;
     }
 
-    public String getPrenom() {
+    public String getFirstName() {
         return firstName;
     }
 
-    public Utilisateur setPrenom(String first_name) {
+    public User setPrenom(String first_name) {
         this.firstName = first_name;
         return this;
     }
@@ -44,7 +44,7 @@ public class Utilisateur {
         return email;
     }
 
-    public Utilisateur setEmail(String email) {
+    public User setEmail(String email) {
         this.email = email;
         return this;
     }
@@ -53,16 +53,16 @@ public class Utilisateur {
         return id;
     }
 
-    public Utilisateur setId(String id) {
+    public User setId(String id) {
         this.id = id;
         return this;
     }
 
-    public String getIsAdmin() {
+    public Boolean getIsAdmin() {
         return isAdmin;
     }
 
-    public Utilisateur setIsAdmin(String isAdmin) {
+    public User setIsAdmin(Boolean isAdmin) {
         this.isAdmin = isAdmin;
         return this;
     }
