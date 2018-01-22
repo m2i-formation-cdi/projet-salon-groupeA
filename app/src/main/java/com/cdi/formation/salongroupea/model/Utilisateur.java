@@ -5,8 +5,8 @@ package com.cdi.formation.salongroupea.model;
  */
 
 public class Utilisateur {
-    private String nom;
-    private String prenom;
+    private String name;
+    private String firstName;
     private String email;
     private String id;
     private String isAdmin = "user";
@@ -15,28 +15,28 @@ public class Utilisateur {
     }
 
     public Utilisateur(String nom, String prenom, String email, String id, String isAdmin) {
-        this.nom = nom;
-        this.prenom = prenom;
+        this.name = nom;
+        this.firstName = prenom;
         this.email = email;
         this.id = id;
         this.isAdmin = isAdmin;
     }
 
     public String getNom() {
-        return nom;
+        return name;
     }
 
-    public Utilisateur setNom(String nom) {
-        this.nom = nom;
+    public Utilisateur setNom(String name) {
+        this.name = name;
         return this;
     }
 
     public String getPrenom() {
-        return prenom;
+        return firstName;
     }
 
-    public Utilisateur setPrenom(String prenom) {
-        this.prenom = prenom;
+    public Utilisateur setPrenom(String first_name) {
+        this.firstName = first_name;
         return this;
     }
 
