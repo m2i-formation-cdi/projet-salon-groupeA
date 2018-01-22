@@ -4,8 +4,10 @@
     <modules>
       <module fileurl="file://C:\Users\Formation.M2I-JAV5-04\Desktop\Mes projets\projet-salon-groupeA\SalonGroupeA.iml" filepath="C:\Users\Formation.M2I-JAV5-04\Desktop\Mes projets\projet-salon-groupeA\SalonGroupeA.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/projet-salon-groupeA.iml" filepath="$PROJECT_DIR$/projet-salon-groupeA.iml" />
+      <module fileurl="file://C:\Users\Formation.M2I-JAV5-04\AndroidStudioProjects\projet-salon-groupeA\app\app.iml" filepath="C:\Users\Formation.M2I-JAV5-04\AndroidStudioProjects\projet-salon-groupeA\app\app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/projet-salon-groupeA.iml" filepath="$PROJECT_DIR$/.idea/projet-salon-groupeA.iml" />
       <module fileurl="file://C:\Users\Formation.M2I-JAV5-04\Desktop\workspace\dao\SalonGroupeA\.idea\projet-salon-groupeA.iml" filepath="C:\Users\Formation.M2I-JAV5-04\Desktop\workspace\dao\SalonGroupeA\.idea\projet-salon-groupeA.iml" />
+      <module fileurl="file://C:\Users\Formation.M2I-JAV5-04\AndroidStudioProjects\projet-salon-groupeA\projet-salon-groupeA.iml" filepath="C:\Users\Formation.M2I-JAV5-04\AndroidStudioProjects\projet-salon-groupeA\projet-salon-groupeA.iml" />
     </modules>
   </component>
 </project>
