@@ -173,16 +173,17 @@ public class MainActivity extends AppCompatActivity
                     userNameTextView.setText((fbUser.getDisplayName()));
                     userEmailTextView.setText((fbUser.getEmail()));
 
-                    //Hydratation de l'objet user
-                     String[] name = fbUser.getDisplayName().split(" ");
-                     currentUser.setName(name[0]);
-                     currentUser.setPrenom(name[1]);
-                     currentUser.setEmail(fbUser.getEmail());
-                     currentUser.setId(fbUser.getUid());
+                    //if() {
+                        //Hydratation de l'objet user
+                        String[] name = fbUser.getDisplayName().split(" ");
+                        currentUser.setName(name[0]);
+                        currentUser.setPrenom(name[1]);
+                        currentUser.setEmail(fbUser.getEmail());
+                        currentUser.setId(fbUser.getUid());
 
-                   String userId = userReference.push().getKey();
-                   userReference.child(userId).setValue(currentUser);
-
+                        //String userId = userReference.push().getKey();
+                        userReference.child(fbUser.getUid()).setValue(currentUser);
+                   // }
                 }
                 //Masquage du lien login
                 navigationView.getMenu().findItem(R.id.actionLogin).setVisible(false);
