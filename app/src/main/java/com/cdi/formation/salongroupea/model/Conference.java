@@ -18,7 +18,7 @@ public class Conference {
     public User speaker;
     public List<User> attendents;
     public List<Comments> comments;
-    public String key;
+    public String refKey;
 
     public Conference() {
     }
@@ -158,12 +158,12 @@ public class Conference {
         return this;
     }
 
-    public String getKey() {
-        return key;
+    public String getRefKey() {
+        return refKey;
     }
 
-    public Conference setKey(String key) {
-        this.key = key;
+    public Conference setRefKey(String refKey) {
+        this.refKey = refKey;
         return this;
     }
 }
