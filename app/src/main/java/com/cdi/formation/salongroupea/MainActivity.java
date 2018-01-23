@@ -34,8 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity      implements NavigationView.OnNavigationItemSelectedListener {
 
 
     public final int LOGIN_REQUESTCODE = 1;
@@ -58,16 +57,9 @@ public class MainActivity extends AppCompatActivity
         firebaseDatabase = FirebaseDatabase.getInstance();
         userReference = firebaseDatabase.getReference().child("user");
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
-        drawer = (DrawerLayout) findViewById(R.id.fragmentContainer);
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -75,7 +67,19 @@ public class MainActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        navigateToFragment(new ConfListFragment());
+
+
+        Fragment ConfFragment = new ConfListFragment();
+
+       // Bundle bundle = new Bundle();
+       // bundle.putString("key", "value");
+       //
+       //
+       //
+       // ConfFragment.setArguments(bundle);
+
+        navigateToFragment(ConfFragment);
+
 
 
         //Reference aux textview dans l'entête de la navigation
@@ -89,7 +93,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.fragmentContainer);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -139,7 +143,7 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.fragmentContainer);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -183,7 +187,7 @@ public class MainActivity extends AppCompatActivity
                         currentUser.setName(name[0]);
                         currentUser.setPrenom(name[1]);
                         currentUser.setEmail(fbUser.getEmail());
-                        currentUser.setId(fbUser.getUid());
+                        currentUser.setUserId(fbUser.getUid());
 
                         //String userId = userReference.push().getKey();
                         userReference.child(fbUser.getUid()).setValue(currentUser);
