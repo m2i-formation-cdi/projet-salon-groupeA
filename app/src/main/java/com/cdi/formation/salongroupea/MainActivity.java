@@ -34,8 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity      implements NavigationView.OnNavigationItemSelectedListener {
-
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public final int LOGIN_REQUESTCODE = 1;
     private FirebaseUser fbUser;
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity      implements NavigationVi
     private TextView userEmailTextView;
     private User currentUser;
     private NavigationView navigationView;
-    private DrawerLayout drawer ;
+    private DrawerLayout drawer;
     private DatabaseReference userReference;
     private FirebaseDatabase firebaseDatabase;
 
@@ -53,42 +52,30 @@ public class MainActivity extends AppCompatActivity      implements NavigationVi
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         firebaseDatabase = FirebaseDatabase.getInstance();
         userReference = firebaseDatabase.getReference().child("user");
-
-
-
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-        Fragment ConfFragment = new ConfListFragment();
-
-       // Bundle bundle = new Bundle();
-       // bundle.putString("key", "value");
-       //
-       //
-       //
-       // ConfFragment.setArguments(bundle);
-
-        navigateToFragment(ConfFragment);
-
-
-
+        // Bundle bundle = new Bundle();
+        // bundle.putString("key", "value");
+        //
+        //
+        //
+        // ConfFragment.setArguments(bundle);
         //Reference aux textview dans l'entête de la navigation
-        View headerView = ((NavigationView)navigationView.findViewById(R.id.nav_view)).getHeaderView(0);
+        View headerView = ((NavigationView) navigationView.findViewById(R.id.nav_view)).getHeaderView(0);
         userEmailTextView = headerView.findViewById(R.id.headerUserEmail);
         userNameTextView = headerView.findViewById(R.id.headerUserName);
-
         //Instanciation d'un utilisateur
         this.currentUser = new User();
+        Fragment ConfFragment = new ConfListFragment();
+        navigateToFragment(ConfFragment);
     }
 
     @Override
@@ -114,12 +101,10 @@ public class MainActivity extends AppCompatActivity      implements NavigationVi
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -128,89 +113,71 @@ public class MainActivity extends AppCompatActivity      implements NavigationVi
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.actionLogin) {
             navigateToFragment(new FragmentInscription());
         } else if (id == R.id.actionLogout) {
-
         } else if (id == R.id.myConf) {
-
         } else if (id == R.id.createConf) {
-
+        } else if (id == R.id.validateConf) {
         }
-        else if (id == R.id.validateConf) {
-
-        }
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-
-
-
     //lancement de la procédure d'authentification
-    public void onLogin(MenuItem item){
-
+    public void onLogin(MenuItem item) {
         //Définition des fournisseurs d'authentification
         List<AuthUI.IdpConfig> providers = new ArrayList<>();
         providers.add(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
-
         //lancement de l'activité authentification
         startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(providers)
                 .build(), LOGIN_REQUESTCODE);
-
-
     }
 
     //Résultat de l'intention
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == LOGIN_REQUESTCODE){
+        if (requestCode == LOGIN_REQUESTCODE) {
             //Récupération de la réponse
             IdpResponse response = IdpResponse.fromResultIntent(data);
-
-            if(resultCode == RESULT_OK){
+            if (resultCode == RESULT_OK) {
                 //Récupération de l'utilisateur connecté
                 fbUser = FirebaseAuth.getInstance().getCurrentUser();
-
                 //Affichage des infos utilisateur
-                if(fbUser !=null) {
+                if (fbUser != null) {
                     userNameTextView.setText((fbUser.getDisplayName()));
                     userEmailTextView.setText((fbUser.getEmail()));
-
                     //if() {
-                        //Hydratation de l'objet user
-                        String[] name = fbUser.getDisplayName().split(" ");
-                        currentUser.setName(name[0]);
-                        currentUser.setPrenom(name[1]);
-                        currentUser.setEmail(fbUser.getEmail());
-                        currentUser.setUserId(fbUser.getUid());
-
-                        //String userId = userReference.push().getKey();
-                        userReference.child(fbUser.getUid()).setValue(currentUser);
-                   // }
+                    //Hydratation de l'objet user
+                    String[] name = fbUser.getDisplayName().split(" ");
+                    currentUser.setName(name[0]);
+                    currentUser.setPrenom(name[1]);
+                    currentUser.setEmail(fbUser.getEmail());
+                    currentUser.setUserId(fbUser.getUid());
+                    //String userId = userReference.push().getKey();
+                    userReference.child(fbUser.getUid()).setValue(currentUser);
+                    // }
                 }
                 //Masquage du lien login
                 navigationView.getMenu().findItem(R.id.actionLogin).setVisible(false);
                 //Affichage du lien logout
                 navigationView.getMenu().findItem(R.id.actionLogout).setVisible(true);
-            }else{
-                if(response !=null){
+            } else {
+                if (response != null) {
                     Log.d("Main", " Erreur Fireauth code: " + response.getErrorCode());
                 }
-
                 Toast.makeText(this, "Impossible de vous identifier", Toast.LENGTH_SHORT).show();
             }
+            Fragment ConfFragment = new ConfListFragment();
+            navigateToFragment(ConfFragment);
         }
     }
 
-    private void navigateToFragment(Fragment targetFragment){
+    private void navigateToFragment(Fragment targetFragment) {
         getFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragmentContainer,targetFragment)
+                .replace(R.id.fragmentContainer, targetFragment)
                 .commit();
     }
 
@@ -223,20 +190,16 @@ public class MainActivity extends AppCompatActivity      implements NavigationVi
                         navigationView.getMenu().findItem(R.id.actionLogin).setVisible(true);
                         //masquage du lien logout
                         navigationView.getMenu().findItem(R.id.actionLogout).setVisible(false);
-
                         //Suppression des infos utilisateurs dans l'en tête
                         userNameTextView.setText("");
                         userEmailTextView.setText("");
-
                         fbUser = null;
-
                         //fermeture du menu
+
                         drawer.closeDrawer((GravityCompat.START));
+                       Fragment ConfFragment = new ConfListFragment();
+                       navigateToFragment(ConfFragment);
                     }
                 });
     }
-
-
-
-
 }
