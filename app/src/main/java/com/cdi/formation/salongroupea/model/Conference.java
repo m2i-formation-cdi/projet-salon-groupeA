@@ -18,6 +18,7 @@ public class Conference {
     User Speaker;
     List<User> attendents;
     List<Comment> comments;
+    private User user;
 
     public Conference() {
     }
@@ -133,5 +134,9 @@ public class Conference {
     public Conference setComments(List<Comment> comments) {
         this.comments = comments;
         return this;
+    }
+
+    public User getUser() {
+        return user;
     }
 }
