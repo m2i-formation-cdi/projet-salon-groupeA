@@ -1,6 +1,7 @@
 package com.cdi.formation.salongroupea;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -67,16 +68,10 @@ public class Conference_A_Valider_Fragment extends Fragment {
                 Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
                 toast.show();
 
+                //Naviguer vers ListeConferencesEnAttente
+                //InterfaceActivity activity = (InterfaceActivity) getActivity();
+                //activity.navigateToFragment(new ListeConferencesEnAttente);
 
-
-
-                //Récupération de l'utilisateur et modification du nom de l'utilisateur
-              // parentActivity.getUser().setUsername(userName);
-
-                //Naviguer vers FragmentB en passant par l'activité parente
-               // parentActivity.goToFragmentB();
-            }
-        });
         //Gestion du clic sur le bouton Annuler
         Button buttonCancel = view.findViewById(R.id.buttonCancel);
         buttonCancel.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +83,9 @@ public class Conference_A_Valider_Fragment extends Fragment {
                 toast.show();
             }
             });
+        //Naviguer vers ListeConferencesEnAttente
+        //InterfaceActivity activity = (InterfaceActivity) getActivity();
+        //activity.navigateToFragment(new ListeConferencesEnAttente);
 
         return view;
 
