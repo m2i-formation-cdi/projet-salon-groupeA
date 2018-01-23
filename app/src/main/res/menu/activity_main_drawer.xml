@@ -28,7 +28,8 @@
         <item
             android:id="@+id/validateConf"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Valider les conférences" />
+            android:title="Valider les conférences"
+            android:visible="false"/>
     </group>
 
 

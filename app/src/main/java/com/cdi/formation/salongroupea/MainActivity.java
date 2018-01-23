@@ -26,8 +26,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -172,18 +175,38 @@ public class MainActivity extends AppCompatActivity
                 if(fbUser !=null) {
                     userNameTextView.setText((fbUser.getDisplayName()));
                     userEmailTextView.setText((fbUser.getEmail()));
+                 //Hydratation de notre objet User à partir de fbUser
+                    hydrateUser();
 
-                    //if() {
-                        //Hydratation de l'objet user
-                        String[] name = fbUser.getDisplayName().split(" ");
-                        currentUser.setName(name[0]);
-                        currentUser.setPrenom(name[1]);
-                        currentUser.setEmail(fbUser.getEmail());
-                        currentUser.setId(fbUser.getUid());
 
-                        //String userId = userReference.push().getKey();
-                        userReference.child(fbUser.getUid()).setValue(currentUser);
-                   // }
+                  /*  for( DataSnapshot bookSnapshot : dataSnapshot.getChildren()){
+                        //Création d'une instance de book et hydratation avec les données du snapshot
+                        Book book = bookSnapshot.getValue(Book.class);
+                        //Ajout du livre à la liste
+                        bookList.add(book);
+                    }*/
+                    userReference.child(currentUser.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists()){
+
+                                    currentUser = dataSnapshot.getValue(User.class);
+                                if(currentUser.getIsAdmin() ==true) {
+                                    navigationView.getMenu().findItem(R.id.validateConf).setVisible(true);
+                                }
+                            }else{
+                                //creer un nouvel utilisiteur dans la base
+                                userReference.child(fbUser.getUid()).setValue(currentUser);
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }
                 //Masquage du lien login
                 navigationView.getMenu().findItem(R.id.actionLogin).setVisible(false);
@@ -197,6 +220,16 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(this, "Impossible de vous identifier", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void hydrateUser() {
+        //Hydratation de l'objet user
+        String[] name = fbUser.getDisplayName().split(" ");
+        currentUser.setName(name[0]);
+        currentUser.setPrenom(name[1]);
+        currentUser.setEmail(fbUser.getEmail());
+        currentUser.setId(fbUser.getUid());
+
     }
 
     private void navigateToFragment(Fragment targetFragment){
@@ -222,6 +255,7 @@ public class MainActivity extends AppCompatActivity
 
                         fbUser = null;
 
+                        navigationView.getMenu().findItem(R.id.validateConf).setVisible(false);
                         //fermeture du menu
                         drawer.closeDrawer((GravityCompat.START));
                     }
