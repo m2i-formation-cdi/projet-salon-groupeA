@@ -121,15 +121,18 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
 
             Button button = view.findViewById(R.id.buttonRegister);
 
-
+            if (currentUser != null) {
+                button.setEnabled(true);
+            }
             Conference conferenceItem = confList.get(position);
             //Boolean foundUser = false;
-            for(User user1 : conferenceItem.attendents){
-                if(user1.getUserId().equals(currentUser.getUserId())){
+            if(conferenceItem.attendents!= null){
+            for (User user1 : conferenceItem.attendents) {
+                if (user1.getUserId().equals(currentUser.getUserId())) {
                     button.setEnabled(false);
                     break;
                 }
-            }
+            }}
             //Log.i("USERID", firebaseDatabase.getReference("conference/" + conferenceItem.getRefKey() + "/attendents/"+currentUser.getUserId()).toString());
 
             button.setOnClickListener(new View.OnClickListener() {
@@ -140,7 +143,6 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                     Conference selectedConference = confList.get(position);
 
                     new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
-
 
                     selectedConference.getAttendents().add(currentUser);
 
