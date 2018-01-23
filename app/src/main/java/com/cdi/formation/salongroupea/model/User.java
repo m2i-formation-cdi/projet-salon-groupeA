@@ -1,24 +1,26 @@
 package com.cdi.formation.salongroupea.model;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 /**
  * Created by Formation on 22/01/2018.
  */
-
+@IgnoreExtraProperties
 public class User {
     private String name;
     private String firstName;
     private String email;
-    private String id;
+    private String userId;
     private Boolean isAdmin = false;
 
     public User() {
     }
 
-    public User(String name, String firstName, String email, String id, Boolean isAdmin) {
+    public User(String name, String firstName, String email, String userId, Boolean isAdmin) {
         this.name = name;
         this.firstName = firstName;
         this.email = email;
-        this.id = id;
+        this.userId = userId;
         this.isAdmin = isAdmin;
     }
 
@@ -49,12 +51,12 @@ public class User {
         return this;
     }
 
-    public String getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public User setId(String id) {
-        this.id = id;
+    public User setUserId(String userId) {
+        this.userId = userId;
         return this;
     }
 

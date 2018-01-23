@@ -1,20 +1,23 @@
 package com.cdi.formation.salongroupea.model;
 
+
+
 /**
  * Created by Formation on 22/01/2018.
  */
 
-public class Comment {
+public class Comments {
 
 
-    private String authorId;
-    private String message;
-    private String rate;
+    public String authorId;
+    public String message;
+    public String rate;
 
-    public Comment() {
+
+    public Comments() {
     }
 
-    public Comment(String authorId, String message, String rate) {
+    public Comments(String authorId, String message, String rate) {
         this.authorId = authorId;
         this.message = message;
         this.rate = rate;
@@ -24,7 +27,7 @@ public class Comment {
         return authorId;
     }
 
-    public Comment setAuthorId(String authorId) {
+    public Comments setAuthorId(String authorId) {
         this.authorId = authorId;
         return this;
     }
@@ -33,7 +36,7 @@ public class Comment {
         return message;
     }
 
-    public Comment setMessage(String message) {
+    public Comments setMessage(String message) {
         this.message = message;
         return this;
     }
@@ -42,7 +45,7 @@ public class Comment {
         return rate;
     }
 
-    public Comment setRate(String rate) {
+    public Comments setRate(String rate) {
         this.rate = rate;
         return this;
     }
