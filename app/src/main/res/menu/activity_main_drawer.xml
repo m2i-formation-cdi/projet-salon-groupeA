@@ -27,6 +27,12 @@
             android:id="@+id/validateConf"
             android:icon="@drawable/ic_menu_manage"
             android:title="Valider les conférences" />
+
+        <item
+            android:id="@+id/validateConf2"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Valider les conférences" />
+
     </group>
 
 
