@@ -26,6 +26,7 @@
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:src="@drawable/ic_location_on_black_24dp"
+        android:id="@+id/getMap"
         />
 
     <Button

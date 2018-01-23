@@ -2,6 +2,7 @@ package com.cdi.formation.salongroupea;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,8 +76,11 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                     Conference conf = confSnap.getValue(Conference.class);
                     conf.setRefKey(key);
 
+                    if (conf.getDay()!= null){
+
                     //ajout du livre a la liste
                     confList.add(conf);
+                    }
                 }
                 Log.d(" MAIN", "------------------- Fin de recuperation des données -----------------------");
                 adapter.notifyDataSetChanged();
@@ -160,14 +165,45 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                 }
 
             });
+
+
+                ImageView image = view.findViewById(R.id.getMap);
+
+                image.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //map
+                        Conference selectedConference = confList.get(position);
+
+                        //Création d'un intention pour l'affichage de la carte
+                        Intent mapIntention = new Intent(getActivity(), MapsActivity.class);
+
+                        //Passage des paramètres
+                        mapIntention.putExtra("latitude", Double.valueOf(selectedConference.getLatitude()));
+                        mapIntention.putExtra("longitude", Double.valueOf(selectedConference.getLongitude()));
+                        mapIntention.putExtra("title", selectedConference.getTitle());
+                        mapIntention.putExtra("theme", selectedConference.getTheme());
+                        mapIntention.putExtra("day", selectedConference.getDay());
+                        mapIntention.putExtra("startHour", selectedConference.getStartHour());
+
+                        //Affichage de l'activité
+                        startActivity(mapIntention);
+                    }
+
+
+                });
+
             return view;
         }
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        this.selectedIndex = position;
-        adapter.notifyDataSetChanged();
+
+            this.selectedIndex = position;
+            adapter.notifyDataSetChanged();
+
+
 
     }
 
