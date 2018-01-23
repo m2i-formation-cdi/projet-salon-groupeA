@@ -26,6 +26,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +40,11 @@ public class MainActivity extends AppCompatActivity
     private FirebaseUser fbUser;
     private TextView userNameTextView;
     private TextView userEmailTextView;
-    private User user;
+    private User currentUser;
     private NavigationView navigationView;
     private DrawerLayout drawer ;
+    private DatabaseReference userReference;
+    private FirebaseDatabase firebaseDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,9 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        userReference = firebaseDatabase.getReference().child("user");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +80,7 @@ public class MainActivity extends AppCompatActivity
         userNameTextView = headerView.findViewById(R.id.headerUserName);
 
         //Instanciation d'un utilisateur
-        this.user = new User();
+        this.currentUser = new User();
     }
 
     @Override
@@ -146,6 +153,8 @@ public class MainActivity extends AppCompatActivity
         //lancement de l'activité authentification
         startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(providers)
                 .build(), LOGIN_REQUESTCODE);
+
+
     }
 
     //Résultat de l'intention
@@ -163,6 +172,17 @@ public class MainActivity extends AppCompatActivity
                 if(fbUser !=null) {
                     userNameTextView.setText((fbUser.getDisplayName()));
                     userEmailTextView.setText((fbUser.getEmail()));
+
+                    //Hydratation de l'objet user
+                     String[] name = fbUser.getDisplayName().split(" ");
+                     currentUser.setName(name[0]);
+                     currentUser.setPrenom(name[1]);
+                     currentUser.setEmail(fbUser.getEmail());
+                     currentUser.setId(fbUser.getUid());
+
+                   String userId = userReference.push().getKey();
+                   userReference.child(userId).setValue(currentUser);
+
                 }
                 //Masquage du lien login
                 navigationView.getMenu().findItem(R.id.actionLogin).setVisible(false);
