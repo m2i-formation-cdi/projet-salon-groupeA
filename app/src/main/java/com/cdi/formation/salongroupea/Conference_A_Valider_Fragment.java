@@ -83,6 +83,9 @@ public class Conference_A_Valider_Fragment extends Fragment {
                 toast.show();
             }
             });
+        //Naviguer vers ListeConferencesEnAttente
+        //InterfaceActivity activity = (InterfaceActivity) getActivity();
+        //activity.navigateToFragment(new ListeConferencesEnAttente);
 
         //Naviguer vers ListeConferencesEnAttente
         //InterfaceActivity activity = (InterfaceActivity) getActivity();
