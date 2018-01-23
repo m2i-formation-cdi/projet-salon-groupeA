@@ -43,14 +43,18 @@ public class ConfListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         firebaseDatabase = FirebaseDatabase.getInstance();
         confReference = firebaseDatabase.getReference().child("conference");
-
         View view = inflater.inflate(R.layout.fragment_conf_list, container, false);
+
         confListView = view.findViewById(R.id.confListView);
-        //creation de la vue qui liste les conferences
-        adapter = new ConfArrayAdapter(getActivity(), R.layout.conf_list_item);
+
+        //creation de la vue qui liste les livres
+        adapter = new ConfArrayAdapter(this.getActivity(), R.layout.conf_list_item);
         confListView.setAdapter(adapter);
+
         //recuperation des données avec abonnement au modif ulterieurs
         confReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -70,9 +74,11 @@ public class ConfListFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                Log.d(" ERRORRRRRRRR", "------------------- erreur de database -----------------------");
             }
         });
-        Log.d("MAIN", "Fin de onCreate()");
+        Log.d("MAIN", " ------------------------ Fin de onCreate() -------------------------------");
+        ((ViewGroup)confListView.getParent()).removeView(confListView);
         // Inflate the layout for this fragment
         return confListView;
     }
@@ -84,14 +90,17 @@ public class ConfListFragment extends Fragment {
         List<Conference> data;
 
         public ConfArrayAdapter(@NonNull Context context, int resource) {
-            super(context, resource);
+            super(getActivity(), R.layout.conf_list_item, confList);
         }
 
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-            View view = inflater.inflate(R.layout.conf_list_item, parent, false);
+
+        //    LayoutInflater inflater = this.context.getLayoutInflater();
+        //    final View view = inflater.inflate(R.layout.details, parent, false);
+
+            View view = getActivity().getLayoutInflater().inflate(R.layout.conf_list_item, parent, false);
             Conference currentConf = confList.get(position);
             TextView textView = view.findViewById(R.id.confListText);
             textView.setText(currentConf.title.toString());
