@@ -65,8 +65,10 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                 confList.clear();
                 //boucler sur lensemble des noeuds
                 for (DataSnapshot confSnap : dataSnapshot.getChildren()) {
+                    String key = confSnap.getKey();
                     //creation d'une instance darticle et hydratation avec les données du snapshot
                     Conference conf = confSnap.getValue(Conference.class);
+                    conf.setKey(key);
                     //ajout du livre a la liste
                     confList.add(conf);
                 }
@@ -128,8 +130,13 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                     Log.i("prenom :",selectedConference.getAttendents().get(position).getFirstName() );
                     Log.i("nom :",selectedConference.getAttendents().get(position).getName() );
 
-                    //String conf = confReference.child("attendents").push().getKey();
+
+
+                    String conf = confReference.child("attendents").push().getKey();
+
+
                    // confReference.child("attendents").setValue(selectedConference);
+                    firebaseDatabase.getReference().child("conference").child(selectedConference.getKey()).setValue(selectedConference);
 
                 }
 

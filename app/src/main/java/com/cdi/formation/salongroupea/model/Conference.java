@@ -18,6 +18,7 @@ public class Conference {
     public User speaker;
     public List<User> attendents;
     public List<Comments> comments;
+    public String key;
 
     public Conference() {
     }
@@ -154,6 +155,15 @@ public class Conference {
     //
     public Conference setComments(List<Comments> comments) {
         this.comments = comments;
+        return this;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public Conference setKey(String key) {
+        this.key = key;
         return this;
     }
 }
