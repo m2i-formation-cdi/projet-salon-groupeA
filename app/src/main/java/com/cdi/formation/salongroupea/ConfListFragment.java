@@ -30,48 +30,37 @@ import java.util.List;
  */
 public class ConfListFragment extends Fragment {
 
-
     private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference convReference;
+    private DatabaseReference confReference;
     private List<Conference> confList = new ArrayList<>();
-    private ListView convListView;
+    private ListView confListView;
     private ConfArrayAdapter adapter;
-
-
-
-
-
 
     public ConfListFragment() {
         // Required empty public constructor
     }
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         firebaseDatabase = FirebaseDatabase.getInstance();
-        convReference = firebaseDatabase.getReference().child("conference");
+        confReference = firebaseDatabase.getReference().child("conference");
 
         View view = inflater.inflate(R.layout.fragment_conf_list, container, false);
-
-        convListView = view.findViewById(R.id.confListView);
-        //creation de la vue qui liste les livres
-        adapter = new ConfArrayAdapter(this.getContext(), R.layout.conf_list_item );
-        convListView.setAdapter(adapter);
+        confListView = view.findViewById(R.id.confListView);
+        //creation de la vue qui liste les conferences
+        adapter = new ConfArrayAdapter(getActivity(), R.layout.conf_list_item);
+        confListView.setAdapter(adapter);
         //recuperation des données avec abonnement au modif ulterieurs
-        convReference.addValueEventListener(new ValueEventListener() {
+        confReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 //reinitialiser la list
                 confList.clear();
                 //boucler sur lensemble des noeuds
-                for (DataSnapshot convSnap : dataSnapshot.getChildren()) {
+                for (DataSnapshot confSnap : dataSnapshot.getChildren()) {
                     //creation d'une instance darticle et hydratation avec les données du snapshot
-                    Conference conf = convSnap.getValue(Conference.class);
+                    Conference conf = confSnap.getValue(Conference.class);
                     //ajout du livre a la liste
                     confList.add(conf);
                 }
@@ -84,12 +73,8 @@ public class ConfListFragment extends Fragment {
             }
         });
         Log.d("MAIN", "Fin de onCreate()");
-
-
-
-
         // Inflate the layout for this fragment
-        return convListView;
+        return confListView;
     }
 
     private class ConfArrayAdapter extends ArrayAdapter<Conference> {
@@ -105,12 +90,12 @@ public class ConfListFragment extends Fragment {
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            View view = context.getLayoutInflater().inflate(this.resource, parent, false);
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View view = inflater.inflate(R.layout.conf_list_item, parent, false);
             Conference currentConf = confList.get(position);
             TextView textView = view.findViewById(R.id.confListText);
-            textView.setText(currentConf.getTitle());
+            textView.setText(currentConf.title.toString());
             return view;
         }
     }
-
 }

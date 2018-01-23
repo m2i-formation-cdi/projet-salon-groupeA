@@ -1,5 +1,6 @@
 package com.cdi.formation.salongroupea;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     @Override
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.actionLogin) {
-            // Handle the camera action
+            navigateToFragment(new ConfListFragment());
         } else if (id == R.id.actionLogout) {
 
         } else if (id == R.id.myConf) {
@@ -90,5 +92,17 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * Affichage du fragment passé en argument à la place
+     * du composant identifié comme fragmentContainer
+     * @param targetFragment
+     */
+    private void navigateToFragment(Fragment targetFragment){
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.drawer_layout, targetFragment)
+                .commit();
     }
 }
