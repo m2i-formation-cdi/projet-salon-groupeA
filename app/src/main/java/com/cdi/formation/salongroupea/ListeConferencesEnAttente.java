@@ -79,6 +79,7 @@ public class ListeConferencesEnAttente extends Fragment {
             }
         });
 
+
         Log.d("MAIN", "Fin de onCreate");
 
         //addConferences();
