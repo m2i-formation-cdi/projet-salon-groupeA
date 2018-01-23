@@ -1,5 +1,7 @@
 package com.cdi.formation.salongroupea;
 
+import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -93,10 +95,17 @@ public class MainActivity extends AppCompatActivity
         else if (id == R.id.validateConf) {
 
         }
+        else if (id == R.id.validateConf2) {
+       navigateToFragment(new Conference_A_Valider_Fragment());
+        }
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    private void navigateToFragment(Fragment targetFragment){
+        getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, targetFragment).commit();
+
     }
 }
