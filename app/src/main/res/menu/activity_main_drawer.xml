@@ -6,12 +6,14 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/actionLogin"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Login" />
+            android:icon="@drawable/ic_person_black"
+            android:title="Login"
+            android:onClick="onLogin"/>
         <item
             android:id="@+id/actionLogout"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_person_outline_black"
             android:title="Logout"
+            android:onClick="onLogout"
             android:visible="false"/>
         <item
             android:id="@+id/myConf"
