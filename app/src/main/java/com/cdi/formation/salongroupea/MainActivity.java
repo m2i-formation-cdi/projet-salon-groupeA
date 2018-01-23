@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity
         else if (id == R.id.validateConf) {
 
         }else if( id == R.id.manageTheme){
-
+            navigateToFragment(new FragmentManageTheme());
         }
 
 
