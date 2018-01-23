@@ -16,7 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, InterfaceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void navigateToFragment(Fragment targetFragment) {
+    public void navigateToFragment(Fragment targetFragment) {
         getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, targetFragment).commit();
     }
 }

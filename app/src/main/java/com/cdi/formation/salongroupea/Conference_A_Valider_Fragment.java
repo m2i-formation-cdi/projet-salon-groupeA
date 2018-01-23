@@ -1,6 +1,7 @@
 package com.cdi.formation.salongroupea;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -88,6 +89,9 @@ public class Conference_A_Valider_Fragment extends Fragment {
                 toast.show();
             }
             });
+        //Naviguer vers ListeConferencesEnAttente
+        //InterfaceActivity activity = (InterfaceActivity) getActivity();
+        //activity.navigateToFragment(new ListeConferencesEnAttente);
 
         return view;
 
