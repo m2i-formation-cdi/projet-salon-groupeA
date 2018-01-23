@@ -58,7 +58,7 @@ public class Conference_A_Valider_Fragment extends Fragment {
         butonValidate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Récupération de la saisi de l'utilisateur
+                //Récupération de la saisie de l'utilisateur
                 conference.setDay(editTextDay.getText().toString());
                 conference.setStartHour(editTextStartHour.getText().toString());
                 conference.setLatitude(editTextLatitude.getText().toString());
@@ -72,6 +72,8 @@ public class Conference_A_Valider_Fragment extends Fragment {
                 //InterfaceActivity activity = (InterfaceActivity) getActivity();
                 //activity.navigateToFragment(new ListeConferencesEnAttente);
 
+            }
+        });
         //Gestion du clic sur le bouton Annuler
         Button buttonCancel = view.findViewById(R.id.buttonCancel);
         buttonCancel.setOnClickListener(new View.OnClickListener() {
@@ -81,18 +83,12 @@ public class Conference_A_Valider_Fragment extends Fragment {
                 String message = "Vous avez annulé la validation !";
                 Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
                 toast.show();
+
+                //Naviguer vers ListeConferencesEnAttente
+                //InterfaceActivity activity = (InterfaceActivity) getActivity();
+                //activity.navigateToFragment(new ListeConferencesEnAttente);
             }
-            });
-        //Naviguer vers ListeConferencesEnAttente
-        //InterfaceActivity activity = (InterfaceActivity) getActivity();
-        //activity.navigateToFragment(new ListeConferencesEnAttente);
-
-        //Naviguer vers ListeConferencesEnAttente
-        //InterfaceActivity activity = (InterfaceActivity) getActivity();
-        //activity.navigateToFragment(new ListeConferencesEnAttente);
-
+        });
         return view;
-
     }
-
 }
