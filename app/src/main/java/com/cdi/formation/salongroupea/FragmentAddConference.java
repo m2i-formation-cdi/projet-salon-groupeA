@@ -129,6 +129,7 @@ public class FragmentAddConference extends Fragment {
 
     public void initZones(){
         title.setText("");
+        spTheme.setSelection(0);
         description.setText("");
     }
 
