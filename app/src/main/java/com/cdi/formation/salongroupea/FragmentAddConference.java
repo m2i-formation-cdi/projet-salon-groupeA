@@ -2,17 +2,38 @@ package com.cdi.formation.salongroupea;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.cdi.formation.salongroupea.model.Conference;
+import com.cdi.formation.salongroupea.model.User;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class FragmentAddConference extends Fragment {
-
+   // DrawerActivity parentActivity;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference ConfReference;
+    private Conference conference = new Conference();
+    private User user;
+    private EditText title;
+    private EditText description;
+    private Spinner spTheme;
+    private TextView name;
+    private Button btnValid;
+    private int titi;
 
     public FragmentAddConference() {
         // Required empty public constructor
@@ -22,8 +43,93 @@ public class FragmentAddConference extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_conference, container, false);
+
+        View view =  inflater.inflate(R.layout.fragment_add_conference, container, false);
+
+        // Initialisation du spinner contenant les thèmes
+        String[] valSpinner = {"","PHP", "Android","Java","Manger des nouilles"};
+
+        Spinner s = (Spinner) view.findViewById(R.id.spTheme);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, valSpinner);
+        s.setAdapter(adapter);
+
+        //Liaison des champs du layout avec les variables
+
+        title = (EditText) view.findViewById(R.id.edtTitle);
+        spTheme = (Spinner) view.findViewById(R.id.spTheme);
+        description = (EditText) view.findViewById((R.id.edtDescription));
+
+
+        name = (TextView) view.findViewById(R.id.tvName);
+        name.setText("Stagiaire M2I");
+        // à remplaceer
+        // name = getActivity().currentUser.getName();
+
+
+        // Création d'un listener sur le bouton de validation
+        btnValid = (Button) view.findViewById(R.id.btnValid);
+        btnValid.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                //  si les saisies sont Ok, ajoute la conférence
+                if (isInputOk()){
+                    addConference();
+                }
+            }
+        });
+
+        return view;
+    }
+
+    public Boolean isInputOk(){
+        Boolean ok = true;
+        String message = "";
+        if (title.getText().toString().equals("")){
+            message = "Titre";
+        }
+        if (spTheme.getSelectedItem().toString().equals("")){
+            message = message + " Thème";
+        }
+        if (description.getText().toString().equals("")){
+            message = message + " Descriptif";
+        }
+        if (message.length()> 1){
+            Toast.makeText(getActivity(),"Zone(s) manquant(es) à renseigner :" + message +" !", Toast.LENGTH_LONG).show();
+            ok = false;
+        }
+        return ok;
+    }
+
+    public void addConference(){
+
+        try {
+            firebaseDatabase = FirebaseDatabase.getInstance();
+            ConfReference = firebaseDatabase.getReference().child("conference");
+
+            // Hydratation de la conférence
+            conference.setTitle(title.getText().toString());
+            conference.setTheme(spTheme.getSelectedItem().toString());
+            conference.setDescription(description.getText().toString());
+
+            // Chargement des données
+            String confId = ConfReference.push().getKey();
+            ConfReference.child(confId).setValue(conference);
+
+            Toast.makeText(getActivity(),"Enregistrement de la conférence effectuée!", Toast.LENGTH_LONG).show();
+            initZones();
+        } catch (Exception e) {
+            Toast.makeText(getActivity(),"Anomalie lors de l'enregistrement !" + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void initZones(){
+        title.setText("");
+        description.setText("");
     }
 
 }

@@ -17,6 +17,7 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private int toto=5;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.myConf) {
 
         } else if (id == R.id.createConf) {
+            navigateToFragment(new FragmentAddConference());
 
         }
         else if (id == R.id.validateConf) {
