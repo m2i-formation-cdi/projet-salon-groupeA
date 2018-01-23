@@ -13,11 +13,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cdi.formation.salongroupea.model.Conference;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class Conference_A_Valider_Fragment extends Fragment {
 
     //Création des attributs
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference referenceBD;
     private TextView textViewTitleView;
     private TextView textViewThemeView;
     private TextView textViewLocationView;
@@ -29,8 +33,8 @@ public class Conference_A_Valider_Fragment extends Fragment {
     private EditText editTextLatitude;
     private EditText editTextLongitude;
     private Conference conference;
-    private Button buttonValidate;
-    private Button buttonCancel;
+
+
 
 
 
@@ -40,6 +44,8 @@ public class Conference_A_Valider_Fragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_conference__a__valider_, container, false);
         //Instanciation des Attributs
+
+
         textViewTitleView = (TextView) view.findViewById(R.id.textViewTitleView);
         textViewThemeView  = (TextView) view.findViewById(R.id.textViewThemeView);
         textViewLocationView  = (TextView) view.findViewById(R.id.textViewLocationView);
@@ -50,7 +56,9 @@ public class Conference_A_Valider_Fragment extends Fragment {
         editTextStartHour = (EditText) view.findViewById(R.id.editTextStartHour);
         editTextLatitude = (EditText) view.findViewById(R.id.editTextLatitude);
         editTextLongitude = (EditText) view.findViewById(R.id.editTextLongitude);
-        conference = new Conference();
+       // conference = new Conference();
+
+        //textViewTitleView.setText (firebaseDatabase.getReference().child("conference").child("key").child("title").get);
 
 
                 //Gestion du clic sur le bouton valider
@@ -58,11 +66,21 @@ public class Conference_A_Valider_Fragment extends Fragment {
         butonValidate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Récupération de la saisie de l'utilisateur
-                conference.setDay(editTextDay.getText().toString());
-                conference.setStartHour(editTextStartHour.getText().toString());
-                conference.setLatitude(editTextLatitude.getText().toString());
-                conference.setLongitude(editTextLongitude.getText().toString());
+                //Hydratation
+               // conference.setDay(editTextDay.getText().toString());
+               // conference.setStartHour(editTextStartHour.getText().toString());
+               // conference.setLatitude(editTextLatitude.getText().toString());
+               // conference.setLongitude(editTextLongitude.getText().toString());
+
+                //Connexion database
+                firebaseDatabase = FirebaseDatabase.getInstance();
+                //Update de la bd
+                referenceBD = firebaseDatabase.getReference().child("conference");
+
+                referenceBD.child("L3Y5U4ztX31S7dmB-64").child("day").setValue(editTextDay.getText().toString());
+                referenceBD.child("L3Y5U4ztX31S7dmB-64").child("startHour").setValue(editTextStartHour.getText().toString());
+                referenceBD.child("L3Y5U4ztX31S7dmB-64").child("latitude").setValue(editTextLatitude.getText().toString());
+                referenceBD.child("L3Y5U4ztX31S7dmB-64").child("longitude").setValue(editTextLongitude.getText().toString());
 
                 String message = "La conférence a été validée !";
                 Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
