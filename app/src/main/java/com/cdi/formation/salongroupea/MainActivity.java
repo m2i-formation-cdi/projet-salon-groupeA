@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigateToFragment(new ConfListFragment());
 
     }
 
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity
     private void navigateToFragment(Fragment targetFragment){
         getFragmentManager()
                 .beginTransaction()
-                .replace(R.id.drawer_layout, targetFragment)
+                .replace(R.id.fragmentContainer, targetFragment)
                 .commit();
     }
 }
