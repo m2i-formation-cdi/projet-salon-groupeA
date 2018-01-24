@@ -1,5 +1,6 @@
 package com.cdi.formation.salongroupea;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cdi.formation.salongroupea.model.Comments;
 import com.cdi.formation.salongroupea.model.Conference;
 import com.cdi.formation.salongroupea.model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -57,6 +59,9 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
         FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
         //Affichage des infos utilisateur
         //Toast.makeText(this.getActivity(), "fbUser = "+ fbUser.toString() , Toast.LENGTH_SHORT).show();
+
+        //Activity activity = (MainActivity) getActivity();
+
 
         if (fbUser != null) {
             Log.i("FIREBASE_USER","il existe un utilisateur FBUSER");
@@ -137,7 +142,11 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
             final Conference currentConf = confList.get(position);
             TextView textView = view.findViewById(R.id.confListText);
             textView.setText(currentConf.getTitle());
+
+            //recuperation des boutons
             Button button = view.findViewById(R.id.buttonRegister);
+            Button notation = view.findViewById(R.id.buttonRating);
+            ImageView image = view.findViewById(R.id.getMap);
 
 
             //Toast.makeText(getActivity(), currentUser.getEmail() , Toast.LENGTH_SHORT).show();
@@ -145,12 +154,23 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
             if (currentUser.getUserId() != null) {
                 Log.i("CURRENT_USER","il existe un utilisateur AUTH, activation du bouton..."+currentUser.getName());
                 button.setEnabled(true);
+                notation.setEnabled(true);
                 Conference conferenceItem = confList.get(position);
                 //Boolean foundUser = false;
                 if (conferenceItem.attendents != null) {
+                    //Verification que l'utilisateur authentifié est inscrit a la conf
                     for (User user1 : conferenceItem.attendents) {
                         if (user1.getUserId().equals(currentUser.getUserId())) {
                             button.setEnabled(false);
+                            break;
+                        }
+
+                    }
+
+                    //Verification que l'utilisateur authentifié a deja mis une note a la conf
+                    for (Comments com1 : conferenceItem.comments) {
+                        if (com1.getAuthorId().equals(currentUser.getUserId())) {
+                            notation.setEnabled(false);
                             break;
                         }
                     }
@@ -163,7 +183,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                 public void onClick(View v) {
                     //Récupération de l'utilisateur sur lequel on vient de cliquer
                     Conference selectedConference = confList.get(position);
-                    new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
+                    //new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
                     selectedConference.getAttendents().add(currentUser);
                     Toast.makeText(getContext(), selectedConference.getTitle() + "key =" + selectedConference.getRefKey(), Toast.LENGTH_SHORT).show();
                     //    Log.i("Action :", "Isncritpion");
@@ -175,7 +195,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                     firebaseDatabase.getReference().child("conference").child(selectedConference.getRefKey()).setValue(selectedConference);
                 }
             });
-            ImageView image = view.findViewById(R.id.getMap);
+
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -194,6 +214,38 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                     startActivity(mapIntention);
                 }
             });
+
+
+            //Ajouter une note et un commentaire appel du fragment NotationFragment
+            notation.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+
+
+                    //map
+                    Conference selectedConference = confList.get(position);
+                    //Création d'un intention pour l'affichage de la carte
+
+                     Bundle bundle = new Bundle();
+                     bundle.putString("ConfKey", selectedConference.getRefKey());
+                     bundle.putString("SelectedUser", currentUser.getUserId() );
+
+
+
+                    NotationFragment notation = new NotationFragment();
+                    notation.setArguments(bundle);
+
+                    navigateToFragment(notation);
+
+
+
+                }
+            });
+
+
+
             return view;
         }
     }
@@ -212,6 +264,13 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+    }
+
+    private void navigateToFragment(NotationFragment targetFragment) {
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, targetFragment)
+                .commit();
     }
 }
 

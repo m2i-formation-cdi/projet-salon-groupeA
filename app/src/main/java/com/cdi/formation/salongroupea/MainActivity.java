@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //
         //
         //
-        // ConfFragment.setArguments(bundle);
+         //ConfFragment.setArguments(bundle);
         //Reference aux textview dans l'entête de la navigation
         View headerView = ((NavigationView) navigationView.findViewById(R.id.nav_view)).getHeaderView(0);
         userEmailTextView = headerView.findViewById(R.id.headerUserEmail);
