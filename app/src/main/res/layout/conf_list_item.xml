@@ -67,11 +67,12 @@
             android:text="5" />
 
         <RatingBar
+            android:id="@+id/ratingConf"
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:numStars="5"
-            android:rating="4" />
+            android:rating="0" />
 
         <Button
             android:id="@+id/buttonComments"

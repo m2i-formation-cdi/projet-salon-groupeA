@@ -1,6 +1,5 @@
 package com.cdi.formation.salongroupea;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,9 +62,8 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
 
         //Activity activity = (MainActivity) getActivity();
 
-
         if (fbUser != null) {
-            Log.i("FIREBASE_USER","il existe un utilisateur FBUSER");
+            Log.i("FIREBASE_USER", "il existe un utilisateur FBUSER");
 
             //if() {
             //Hydratation de l'objet user
@@ -75,7 +74,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
             currentUser.setEmail(fbUser.getEmail());
             currentUser.setUserId(fbUser.getUid());
 
-            Log.i("CURRENT_USER","On cree le CURRENT_USER"+currentUser.getEmail());
+            Log.i("CURRENT_USER", "On cree le CURRENT_USER" + currentUser.getEmail());
 
             //Toast.makeText(this.getActivity(), this.currentUser.getEmail() , Toast.LENGTH_SHORT).show();
             //String userId = userReference.push().getKey();
@@ -141,6 +140,22 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
             View view = getActivity().getLayoutInflater().inflate(R.layout.conf_list_item, parent, false);
             final Conference currentConf = confList.get(position);
             TextView textView = view.findViewById(R.id.confListText);
+
+            // on calcul la note moyenne de la conference
+            RatingBar rateConf = view.findViewById(R.id.ratingConf);
+            int note = 0;
+
+            if(currentConf.getDay()!=null && currentConf.getComments()!=null ) {
+                for (Comments com : currentConf.getComments()) {
+
+                    Log.i("COM", "on a trouvé une note" + com.getRate() + "de la conf"+ currentConf.getRefKey());
+                    note = note + (int) Double.parseDouble(com.getRate());
+
+                }
+                Integer noteMoy = note / currentConf.getComments().size();
+
+                rateConf.setRating(noteMoy);
+            }
             textView.setText(currentConf.getTitle());
 
             //recuperation des boutons
@@ -148,11 +163,10 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
             Button notation = view.findViewById(R.id.buttonRating);
             ImageView image = view.findViewById(R.id.getMap);
 
-
             //Toast.makeText(getActivity(), currentUser.getEmail() , Toast.LENGTH_SHORT).show();
 
             if (currentUser.getUserId() != null) {
-                Log.i("CURRENT_USER","il existe un utilisateur AUTH, activation du bouton..."+currentUser.getName());
+                Log.i("CURRENT_USER", "il existe un utilisateur AUTH, activation du bouton..." + currentUser.getName());
                 button.setEnabled(true);
                 notation.setEnabled(true);
                 Conference conferenceItem = confList.get(position);
@@ -175,7 +189,9 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                         }
                     }
                 }
-            }else       {  Log.i("CURRENT_USER","On a pas trouvé de CURRENT_USER");}
+            } else {
+                Log.i("CURRENT_USER", "On a pas trouvé de CURRENT_USER");
+            }
 
             //Log.i("USERID", firebaseDatabase.getReference("conference/" + conferenceItem.getRefKey() + "/attendents/"+currentUser.getUserId()).toString());
             button.setOnClickListener(new View.OnClickListener() {
@@ -186,12 +202,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                     //new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
                     selectedConference.getAttendents().add(currentUser);
                     Toast.makeText(getContext(), selectedConference.getTitle() + "key =" + selectedConference.getRefKey(), Toast.LENGTH_SHORT).show();
-                    //    Log.i("Action :", "Isncritpion");
-                    //  Log.i("titre :", selectedConference.getTitle());
-                    //  Log.i("prenom :", selectedConference.getAttendents().get(position).getFirstName());
-                    //  Log.i("nom :", selectedConference.getAttendents().get(position).getName());
-                    //String conf = confReference.child("attendents").push().getKey();
-                    // confReference.child("attendents").setValue(selectedConference);
+
                     firebaseDatabase.getReference().child("conference").child(selectedConference.getRefKey()).setValue(selectedConference);
                 }
             });
@@ -215,36 +226,26 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                 }
             });
 
-
             //Ajouter une note et un commentaire appel du fragment NotationFragment
             notation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-
-
-
                     //map
                     Conference selectedConference = confList.get(position);
                     //Création d'un intention pour l'affichage de la carte
 
-                     Bundle bundle = new Bundle();
-                     bundle.putString("ConfKey", selectedConference.getRefKey());
-                     bundle.putString("SelectedUser", currentUser.getUserId() );
-
-
+                    Bundle bundle = new Bundle();
+                    bundle.putString("ConfKey", selectedConference.getRefKey());
+                    bundle.putString("SelectedUser", currentUser.getUserId());
 
                     NotationFragment notation = new NotationFragment();
                     notation.setArguments(bundle);
 
                     navigateToFragment(notation);
 
-
-
                 }
             });
-
-
 
             return view;
         }
