@@ -146,17 +146,17 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
 
             // on calcul la note moyenne de la conference
             RatingBar rateConf = view.findViewById(R.id.ratingConf);
-            int note = 0;
+            float note = (float) 0.0;
 
-            if(currentConf.getDay()!=null && currentConf.getComments()!=null ) {
+            if (currentConf.getDay() != null && currentConf.getComments() != null) {
                 for (Comments com : currentConf.getComments()) {
 
-                    Log.i("COM", "on a trouvé une note" + com.getRate() + "de la conf"+ currentConf.getRefKey());
-                    note = note + (int) Double.parseDouble(com.getRate());
+                    Log.i("COM", "on a trouvé une note" + com.getRate() + "de la conf" + currentConf.getRefKey());
+                    note = note + (float) Float.parseFloat(com.getRate());
 
                 }
-                Integer noteMoy = note / currentConf.getComments().size();
-
+                float noteMoy = note / currentConf.getComments().size();
+                Log.i("NOTE MOYENNE", String.valueOf(noteMoy));
                 rateConf.setRating(noteMoy);
 
                 nbCom.setText(String.valueOf(currentConf.getComments().size()));
