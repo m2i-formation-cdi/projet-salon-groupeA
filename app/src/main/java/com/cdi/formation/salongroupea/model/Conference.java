@@ -1,6 +1,8 @@
 package com.cdi.formation.salongroupea.model;
 
 
+import org.w3c.dom.Comment;
+
 import java.util.List;
 
 /**
@@ -155,6 +157,11 @@ public class Conference {
     //
     public Conference setComments(List<Comments> comments) {
         this.comments = comments;
+        return this;
+    }
+
+    public Conference addComment(Comments comment){
+        this.comments.add(comment);
         return this;
     }
 
