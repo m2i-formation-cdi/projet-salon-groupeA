@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DatabaseReference userReference;
     private FirebaseDatabase firebaseDatabase;
 
+    private int toto=5;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigateToFragment(new ConfListFragment());
 
         //Reference aux textview dans l'entête de la navigation
         View headerView = ((NavigationView)navigationView.findViewById(R.id.nav_view)).getHeaderView(0);
@@ -130,10 +132,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -142,13 +146,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+
         if (id == R.id.actionLogin) {
             navigateToFragment(new FragmentInscription());
         } else if (id == R.id.actionLogout) {
+
         } else if (id == R.id.myConf) {
+
         } else if (id == R.id.createConf) {
+            navigateToFragment(new FragmentAddConference());
+
         } else if (id == R.id.validateConf) {
         }
+        else if (id == R.id.validateConf) {
+
+        }
+
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
