@@ -28,8 +28,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,20 +65,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Bundle bundle = new Bundle();
-        // bundle.putString("key", "value");
-        //
-        //
-        //
-        // ConfFragment.setArguments(bundle);
         //Reference aux textview dans l'entête de la navigation
-        View headerView = ((NavigationView) navigationView.findViewById(R.id.nav_view)).getHeaderView(0);
+        View headerView = ((NavigationView)navigationView.findViewById(R.id.nav_view)).getHeaderView(0);
         userEmailTextView = headerView.findViewById(R.id.headerUserEmail);
         userNameTextView = headerView.findViewById(R.id.headerUserName);
-        //Instanciation d'un utilisateur
-        this.currentUser = new User();
+        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+
+
+
+
         Fragment ConfFragment = new ConfListFragment();
         navigateToFragment(ConfFragment);
+
+        if (fbUser != null) {
+            userNameTextView.setText((fbUser.getDisplayName()));
+            userEmailTextView.setText((fbUser.getEmail()));
+
+
+            userReference.child(fbUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        currentUser = dataSnapshot.getValue(User.class);
+                        if (currentUser.getIsAdmin() == true) {
+                            navigationView.getMenu().findItem(R.id.validateConf).setVisible(true);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            //Masquage du lien login
+            affichageLogInOut();
+
+        }
+
+
+
     }
 
     @Override
@@ -148,21 +177,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (fbUser != null) {
                     userNameTextView.setText((fbUser.getDisplayName()));
                     userEmailTextView.setText((fbUser.getEmail()));
-                    //if() {
-                    //Hydratation de l'objet user
-                    String[] name = fbUser.getDisplayName().split(" ");
-                    currentUser.setName(name[0]);
-                    currentUser.setPrenom(name[1]);
-                    currentUser.setEmail(fbUser.getEmail());
-                    currentUser.setUserId(fbUser.getUid());
-                    //String userId = userReference.push().getKey();
-                    userReference.child(fbUser.getUid()).setValue(currentUser);
-                    // }
+
+
+                    userReference.child(fbUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+
+                                currentUser = dataSnapshot.getValue(User.class);
+                                if (currentUser.getIsAdmin() == true) {
+                                    navigationView.getMenu().findItem(R.id.validateConf).setVisible(true);
+                                }
+                            } else {
+                                //Hydratation de notre objet User à partir de fbUser
+                                hydrateUser();
+                                //creer un nouvel utilisiteur dans la base
+                                userReference.child(fbUser.getUid()).setValue(currentUser);
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
-                //Masquage du lien login
-                navigationView.getMenu().findItem(R.id.actionLogin).setVisible(false);
-                //Affichage du lien logout
-                navigationView.getMenu().findItem(R.id.actionLogout).setVisible(true);
+                affichageLogInOut();
+
+                //Fermeture du drawer navView
+                drawer.closeDrawer(GravityCompat.START);
+
+
             } else {
                 if (response != null) {
                     Log.d("Main", " Erreur Fireauth code: " + response.getErrorCode());
@@ -172,6 +219,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Fragment ConfFragment = new ConfListFragment();
             navigateToFragment(ConfFragment);
         }
+    }
+
+    private void affichageLogInOut() {
+        //Masquage du lien login
+        navigationView.getMenu().findItem(R.id.actionLogin).setVisible(false);
+        //Affichage du lien logout
+        navigationView.getMenu().findItem(R.id.actionLogout).setVisible(true);
+    }
+
+    private void hydrateUser() {
+        //Hydratation de l'objet user
+        String[] name = fbUser.getDisplayName().split(" ");
+        currentUser.setName(name[0]);
+        currentUser.setPrenom(name[1]);
+        currentUser.setEmail(fbUser.getEmail());
+        currentUser.setUserId(fbUser.getUid());
+
     }
 
     private void navigateToFragment(Fragment targetFragment) {
@@ -193,12 +257,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         //Suppression des infos utilisateurs dans l'en tête
                         userNameTextView.setText("");
                         userEmailTextView.setText("");
-                        fbUser = null;
+                        navigationView.getMenu().findItem(R.id.validateConf).setVisible(false);
                         //fermeture du menu
 
                         drawer.closeDrawer((GravityCompat.START));
-                       Fragment ConfFragment = new ConfListFragment();
-                       navigateToFragment(ConfFragment);
+                        Fragment ConfFragment = new ConfListFragment();
+                        navigateToFragment(ConfFragment);
                     }
                 });
     }

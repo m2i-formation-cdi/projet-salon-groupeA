@@ -43,8 +43,9 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
     private ListView confListView;
     private ConfArrayAdapter adapter;
 
+
     //private User currentUser = new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
-    private User currentUser = new User();
+    public User currentUser = new User();
 
     public ConfListFragment() {
         // Required empty public constructor
@@ -75,6 +76,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
             //Toast.makeText(this.getActivity(), this.currentUser.getEmail() , Toast.LENGTH_SHORT).show();
             //String userId = userReference.push().getKey();
         }
+
         firebaseDatabase = FirebaseDatabase.getInstance();
         confReference = firebaseDatabase.getReference().child("conference");
         View view = inflater.inflate(R.layout.fragment_conf_list, container, false);
