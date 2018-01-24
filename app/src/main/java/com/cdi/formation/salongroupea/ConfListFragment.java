@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -44,6 +45,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
     private int selectedIndex;
     private ListView confListView;
     private ConfArrayAdapter adapter;
+    private int color = 0;
 
 
     //private User currentUser = new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
@@ -148,6 +150,16 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
             RatingBar rateConf = view.findViewById(R.id.ratingConf);
             float note = (float) 0.0;
 
+            LinearLayout confItem = view.findViewById(R.id.confItem);
+
+
+            //color++;
+            //if (color % 2 == 1) {
+            //    confItem.setBackgroundColor(0x0f0F0f);
+            //} else {
+            //    confItem.setBackgroundColor(0x05F505);
+            //}
+//
             if (currentConf.getDay() != null && currentConf.getComments() != null) {
                 for (Comments com : currentConf.getComments()) {
 
