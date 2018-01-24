@@ -66,6 +66,7 @@ public class Conference_A_Valider_Fragment extends Fragment {
         butonValidate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 //Hydratation
                // conference.setDay(editTextDay.getText().toString());
                // conference.setStartHour(editTextStartHour.getText().toString());
