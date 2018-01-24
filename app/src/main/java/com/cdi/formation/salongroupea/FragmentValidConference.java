@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -37,7 +39,7 @@ public class FragmentValidConference extends Fragment {
     private List<Conference> confListSource = new ArrayList<>();
     private List<Conference> confList = new ArrayList<>();
     private ListView lvConference;
-
+    private ConfArrayAdapter adapter;
 
     public FragmentValidConference() {
         // Required empty public constructor
@@ -67,10 +69,16 @@ public class FragmentValidConference extends Fragment {
                 for (DataSnapshot confSnap : dataSnapshot.getChildren()) {
                     //creation d'une instance darticle et hydratation avec les données du snapshot
                     Conference conf = confSnap.getValue(Conference.class);
+                    conf.setConfId(confSnap.getKey());
                     //ajout du livre a la liste
                     confListSource.add(conf);
                 }
-                // adapter.notifyDataSetChanged();
+                //
+               // Toast.makeText(getActivity(),confListSource.get(0).getTitle(),Toast.LENGTH_LONG).show();
+
+               // Collections.sort(confListSource);
+                filtrerConference();
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -78,25 +86,30 @@ public class FragmentValidConference extends Fragment {
                 Log.d(" ERRORRRRRRRR", "------------------- erreur de database -----------------------");
             }
         });
-        Toast.makeText(getActivity(),confListSource.get(0).getTitle(),Toast.LENGTH_LONG).show();
 
-        // affecter les informations à la listView
-
-        // créer un listener pour pouvoir envoyer la conférence à valiuder
+        //creation de la vue qui liste les conférences
+        adapter = new ConfArrayAdapter(this.getActivity());
+        lvConference.setAdapter(adapter);
 
 
         // aiguillage vers la validation avec les informations nécessaires : id conference
         return view;
     }
 
+
+    public void filtrerConference(){
+        for (int i =0; i < confListSource.size(); i++){
+            Conference conf = new Conference();
+            conf = confListSource.get(i);
+            if (conf.getDay() == null) {
+                confList.add(conf);
+            }
+        }
+    }
     private class ConfArrayAdapter extends ArrayAdapter<Conference> {
 
-        private android.app.Fragment context;
-        int resource;
-        List<Conference> data;
-
-        public ConfArrayAdapter(@NonNull Context context, int resource) {
-            super(getActivity(), R.layout.conf_list_item, confList);
+        public ConfArrayAdapter(@NonNull Context context) {
+            super(getActivity(), R.layout.sf_conf_a_valider, confList);
         }
 
         @NonNull
@@ -106,13 +119,21 @@ public class FragmentValidConference extends Fragment {
             //    LayoutInflater inflater = this.context.getLayoutInflater();
             //    final View view = inflater.inflate(R.layout.details, parent, false);
 
-            View view = getActivity().getLayoutInflater().inflate(R.layout.conf_list_item, parent, false);
+            View view = getActivity().getLayoutInflater().inflate(R.layout.sf_conf_a_valider, parent, false);
             Conference currentConf = confList.get(position);
-            TextView textView = view.findViewById(R.id.confListText);
-            textView.setText(currentConf.title.toString());
+
+            TextView titleConf = view.findViewById(R.id.edtTitle);
+            titleConf.setText(currentConf.getTitle().toString());
+
+            TextView theme = view.findViewById(R.id.edtTheme);
+            theme.setText(currentConf.getTheme().toString());
+
+            TextView Description = view.findViewById(R.id.edtDescription);
+            Description.setText(currentConf.getDescription());
 
 
             return view;
         }
     }
+
 }

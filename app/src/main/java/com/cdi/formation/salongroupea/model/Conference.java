@@ -1,12 +1,18 @@
 package com.cdi.formation.salongroupea.model;
 
 
+import android.support.annotation.NonNull;
+
 import java.util.List;
 
 /**
  * Created by Formation on 22/01/2018.
  */
+
+//implements Comparable<Conference>
+
 public class Conference {
+    private String confId;
     public String title;
     public String description;
     public String theme;
@@ -35,6 +41,15 @@ public class Conference {
         this.speaker = speaker;
         this.attendents = attendents;
         this.comments = comments;
+    }
+
+    public String getConfId() {
+        return confId;
+    }
+
+    public Conference setConfId(String confId) {
+        this.confId = confId;
+        return this;
     }
 
     public String getTitle() {
@@ -156,4 +171,9 @@ public class Conference {
         this.comments = comments;
         return this;
     }
+
+/*    @Override
+    public int compareTo(@NonNull Conference conference) {
+        return this.theme.compareTo(conference.getTheme());
+    }*/
 }
