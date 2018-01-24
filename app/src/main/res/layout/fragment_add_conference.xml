@@ -14,7 +14,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Titre de la conférence" />
+            android:text="Titre de la conférence : "
+            android:textSize="18sp" />
 
         <EditText
             android:id="@+id/edtTitle"
@@ -24,7 +25,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Thème de la conférence" />
+            android:text="Thème de la conférence : "
+            android:textSize="18sp" />
 
         <Spinner
             android:id="@+id/spTheme"
@@ -34,7 +36,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Description de la conférence" />
+            android:text="Description de la conférence : "
+            android:textSize="18sp" />
 
         <EditText
             android:id="@+id/edtDescription"
@@ -45,7 +48,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nom du conférencier par défaut" />
+            android:text="Nom du conférencier par défaut : "
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/tvName"
