@@ -18,6 +18,19 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, InterfaceActivity {
 
+
+//Gestion de la référence Conférence pour le formulaire validation conf en attente
+    @Override
+    public String getConfId() {
+        return confId;
+    }
+    @Override
+    public void setConfId(String confId) {
+        this.confId = confId;
+    }
+
+    private String confId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

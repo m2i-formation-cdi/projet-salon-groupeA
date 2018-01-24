@@ -13,8 +13,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cdi.formation.salongroupea.model.Conference;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class Conference_A_Valider_Fragment extends Fragment {
@@ -33,6 +36,7 @@ public class Conference_A_Valider_Fragment extends Fragment {
     private EditText editTextLatitude;
     private EditText editTextLongitude;
     private Conference conference;
+    private String confId;
 
 
 
@@ -43,9 +47,8 @@ public class Conference_A_Valider_Fragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_conference__a__valider_, container, false);
+
         //Instanciation des Attributs
-
-
         textViewTitleView = (TextView) view.findViewById(R.id.textViewTitleView);
         textViewThemeView  = (TextView) view.findViewById(R.id.textViewThemeView);
         textViewLocationView  = (TextView) view.findViewById(R.id.textViewLocationView);
@@ -56,45 +59,76 @@ public class Conference_A_Valider_Fragment extends Fragment {
         editTextStartHour = (EditText) view.findViewById(R.id.editTextStartHour);
         editTextLatitude = (EditText) view.findViewById(R.id.editTextLatitude);
         editTextLongitude = (EditText) view.findViewById(R.id.editTextLongitude);
-       // conference = new Conference();
+        conference = new Conference();
 
-        //textViewTitleView.setText (firebaseDatabase.getReference().child("conference").child("key").child("title").get);
+        //Connexion database
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        //Update de la bd
+        referenceBD = firebaseDatabase.getReference().child("conference");
+        final MainActivity activity = (MainActivity) getActivity();
+        //Récupération de la conférence via ID
+        //confId = activity.getConfId();
 
+        //test récupération des données de Conférence
+        confId = "-L3Y5U4ztX31S7dmB-64";
 
-                //Gestion du clic sur le bouton valider
         Button butonValidate = view.findViewById(R.id.buttonValidate);
-        butonValidate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                //Hydratation
-               // conference.setDay(editTextDay.getText().toString());
-               // conference.setStartHour(editTextStartHour.getText().toString());
-               // conference.setLatitude(editTextLatitude.getText().toString());
-               // conference.setLongitude(editTextLongitude.getText().toString());
-
-                //Connexion database
-                firebaseDatabase = FirebaseDatabase.getInstance();
-                //Update de la bd
-                referenceBD = firebaseDatabase.getReference().child("conference");
-
-                referenceBD.child("L3Y5U4ztX31S7dmB-64").child("day").setValue(editTextDay.getText().toString());
-                referenceBD.child("L3Y5U4ztX31S7dmB-64").child("startHour").setValue(editTextStartHour.getText().toString());
-                referenceBD.child("L3Y5U4ztX31S7dmB-64").child("latitude").setValue(editTextLatitude.getText().toString());
-                referenceBD.child("L3Y5U4ztX31S7dmB-64").child("longitude").setValue(editTextLongitude.getText().toString());
-
-                String message = "La conférence a été validée !";
-                Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
-                toast.show();
-
-                //Naviguer vers ListeConferencesEnAttente
-                //InterfaceActivity activity = (InterfaceActivity) getActivity();
-                //activity.navigateToFragment(new ListeConferencesEnAttente);
-
-            }
-        });
-        //Gestion du clic sur le bouton Annuler
         Button buttonCancel = view.findViewById(R.id.buttonCancel);
+
+        if(confId != null) {
+            referenceBD.child(confId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    for (DataSnapshot confSnap : dataSnapshot.getChildren()) {
+                        conference = confSnap.getValue(Conference.class);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {}
+            });
+
+            //Gestion du clic sur le bouton valider
+
+            butonValidate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    //Hydratation
+                    conference.setDay(editTextDay.getText().toString());
+                    conference.setStartHour(editTextStartHour.getText().toString());
+                    conference.setLatitude(editTextLatitude.getText().toString());
+                    conference.setLongitude(editTextLongitude.getText().toString());
+
+                    referenceBD.child(confId).setValue(conference);
+
+                    String message = "La conférence a été validée !";
+                    Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
+                    toast.show();
+
+                    //Naviguer vers ListeConferencesEnAttente
+                    // activity.navigateToFragment(new ListeConferencesEnAttente());
+                }
+            });
+            //Gestion du clic sur le bouton Annuler
+            buttonCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    String message = "Vous avez annulé la validation !";
+                    Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
+                    toast.show();
+
+                    //Naviguer vers ListeConferencesEnAttente
+                    //activity.navigateToFragment(new ListeConferencesEnAttente());
+                }
+            });
+
+        }else {
+                butonValidate.setVisibility(View.INVISIBLE);
+        }
+
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,10 +138,10 @@ public class Conference_A_Valider_Fragment extends Fragment {
                 toast.show();
 
                 //Naviguer vers ListeConferencesEnAttente
-                //InterfaceActivity activity = (InterfaceActivity) getActivity();
-                //activity.navigateToFragment(new ListeConferencesEnAttente);
+                //activity.navigateToFragment(new ListeConferencesEnAttente());
             }
         });
+
         return view;
     }
 }
