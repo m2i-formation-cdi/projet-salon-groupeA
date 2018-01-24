@@ -80,9 +80,14 @@ public class Conference_A_Valider_Fragment extends Fragment {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
+                    conference = dataSnapshot.getValue(Conference.class);
+/*
                     for (DataSnapshot confSnap : dataSnapshot.getChildren()) {
                         conference = confSnap.getValue(Conference.class);
                     }
+                    */
+
+
                 }
 
                 @Override

@@ -15,7 +15,7 @@ public class Conference {
     private String location;
     private String latitude;
     private String longitude;
-    User Speaker;
+    User speaker;
     List<User> attendents;
     List<Comment> comments;
 
@@ -31,7 +31,7 @@ public class Conference {
         this.location = location;
         this.latitude = latitude;
         this.longitude = longitude;
-        Speaker = speaker;
+        this.speaker = speaker;
         this.attendents = attendents;
         this.comments = comments;
     }
@@ -109,11 +109,11 @@ public class Conference {
     }
 
     public User getSpeaker() {
-        return Speaker;
+        return speaker;
     }
 
     public Conference setSpeaker(User speaker) {
-        Speaker = speaker;
+        this.speaker = speaker;
         return this;
     }
 
