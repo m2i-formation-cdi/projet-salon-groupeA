@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:padding="3dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:layout_marginTop="10dp"
             android:src="@drawable/ic_people_black_24dp" />
 
         <TextView
@@ -28,7 +28,7 @@
             android:id="@+id/getMap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:layout_marginTop="10dp"
             android:src="@drawable/ic_location_on_black_24dp" />
 
         <Button
@@ -56,22 +56,26 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/numberComments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:paddingLeft="10dp"
+            android:layout_marginRight="40dp"
+
             android:text="5" />
 
         <RatingBar
             android:id="@+id/ratingConf"
-            style="?android:attr/ratingBarStyleSmall"
+            style="@style/Widget.AppCompat.RatingBar.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="40dp"
             android:numStars="5"
+
             android:rating="0" />
 
         <Button
@@ -79,10 +83,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:padding="5dp"
             android:src="@drawable/ic_person_add_black_24dp"
             android:text="Voir les commentaires"
-
             android:textSize="12sp" />
 
 

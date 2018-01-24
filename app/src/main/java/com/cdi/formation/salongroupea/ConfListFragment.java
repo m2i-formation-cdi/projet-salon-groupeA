@@ -140,6 +140,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
             View view = getActivity().getLayoutInflater().inflate(R.layout.conf_list_item, parent, false);
             final Conference currentConf = confList.get(position);
             TextView textView = view.findViewById(R.id.confListText);
+            TextView nbCom = view.findViewById(R.id.numberComments);
 
             // on calcul la note moyenne de la conference
             RatingBar rateConf = view.findViewById(R.id.ratingConf);
@@ -155,7 +156,11 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                 Integer noteMoy = note / currentConf.getComments().size();
 
                 rateConf.setRating(noteMoy);
+
+                nbCom.setText(String.valueOf(currentConf.getComments().size()));
+
             }
+
             textView.setText(currentConf.getTitle());
 
             //recuperation des boutons
