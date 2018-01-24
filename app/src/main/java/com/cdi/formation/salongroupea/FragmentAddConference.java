@@ -125,6 +125,7 @@ public class FragmentAddConference extends Fragment {
         } catch (Exception e) {
             Toast.makeText(getActivity(),"Anomalie lors de l'enregistrement !" + e.getMessage(), Toast.LENGTH_LONG).show();
         }
+
     }
 
     public void initZones(){
