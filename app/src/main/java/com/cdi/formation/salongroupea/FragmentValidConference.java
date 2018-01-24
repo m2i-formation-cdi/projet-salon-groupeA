@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,7 +34,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FragmentValidConference extends Fragment {
+public class FragmentValidConference extends Fragment implements AdapterView.OnItemClickListener{
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference confReference;
     private List<Conference> confListSource = new ArrayList<>();
@@ -76,7 +77,7 @@ public class FragmentValidConference extends Fragment {
                 //
                // Toast.makeText(getActivity(),confListSource.get(0).getTitle(),Toast.LENGTH_LONG).show();
 
-               // Collections.sort(confListSource);
+                Collections.sort(confListSource);
                 filtrerConference();
                 adapter.notifyDataSetChanged();
             }
@@ -86,6 +87,10 @@ public class FragmentValidConference extends Fragment {
                 Log.d(" ERRORRRRRRRR", "------------------- erreur de database -----------------------");
             }
         });
+
+        // écouteur sur le listeView
+
+        lvConference.setOnItemClickListener(this);
 
         //creation de la vue qui liste les conférences
         adapter = new ConfArrayAdapter(this.getActivity());
@@ -106,6 +111,15 @@ public class FragmentValidConference extends Fragment {
             }
         }
     }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        MainActivity activity = (MainActivity) getActivity();
+        activity.launchValidation(confList.get(i).getConfId());
+    }
+
+
+
     private class ConfArrayAdapter extends ArrayAdapter<Conference> {
 
         public ConfArrayAdapter(@NonNull Context context) {

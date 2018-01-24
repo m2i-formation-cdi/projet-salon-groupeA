@@ -17,7 +17,8 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private int toto=5;
+    private String confId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,5 +110,10 @@ public class MainActivity extends AppCompatActivity
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, targetFragment)
                 .commit();
+    }
+
+    public void launchValidation(String confId){
+        this.confId = confId;
+        navigateToFragment(new FragmentManageTheme());
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 
 //implements Comparable<Conference>
 
-public class Conference {
+public class Conference implements Comparable<Conference> {
     private String confId;
     public String title;
     public String description;
@@ -172,8 +172,8 @@ public class Conference {
         return this;
     }
 
-/*    @Override
+    @Override
     public int compareTo(@NonNull Conference conference) {
         return this.theme.compareTo(conference.getTheme());
-    }*/
+    }
 }

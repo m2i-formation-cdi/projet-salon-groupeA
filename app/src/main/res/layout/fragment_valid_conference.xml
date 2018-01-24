@@ -12,14 +12,14 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:text="Liste des conférences à valider"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:text="Liste des conférences à valider" />
 
     <ListView
         android:id="@+id/lvConference"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="12"/>
+        android:layout_weight="18" />
 
 </LinearLayout>
 
