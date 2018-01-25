@@ -2,6 +2,7 @@ package com.cdi.formation.salongroupea;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,12 +79,19 @@ public class NotationFragment extends Fragment {
                 com.setAuthorId(selectedUser);
                 com.setMessage(commentVal);
                 com.setRate(String.valueOf(rateVal));
-                List<Comments> listCom = new ArrayList<>();
-                listCom.add(com);
-                conf.setComments(listCom);
+
+                if (conf.getComments() == null) {
+                    List<Comments> listCom = new ArrayList<Comments>();
+                    listCom.add(com);
+                    conf.setComments(listCom);
+                } else {
+                    conf.addComment(com);
+                }
 
                 firebaseDatabase = FirebaseDatabase.getInstance();
                 firebaseDatabase.getReference().child("conference").child(confKey).setValue(conf);
+
+                Log.i("ECRITURE DANS LA BASE", " ------------------------------- un commentaire a ete ajouté ---------- " );
 
                 Bundle bundle = new Bundle();
                 bundle.putString("rateVal", String.valueOf(rateVal));

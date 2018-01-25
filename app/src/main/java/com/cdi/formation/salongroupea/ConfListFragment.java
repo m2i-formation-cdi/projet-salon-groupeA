@@ -231,7 +231,6 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                     firebaseDatabase.getReference().child("conference").child(selectedConference.getRefKey()).setValue(selectedConference);
                 }
             });
-            ImageView image = view.findViewById(R.id.getMap);
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

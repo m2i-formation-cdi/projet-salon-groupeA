@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, InterfaceActivity {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     public final int LOGIN_REQUESTCODE = 1;
     private FirebaseUser fbUser;
@@ -57,17 +57,7 @@ public class MainActivity extends AppCompatActivity
     private int toto = 5;
 
     //Gestion de la référence Conférence pour le formulaire validation conf en attente
-    @Override
-    public String getConfId() {
-        return confId;
-    }
 
-    @Override
-    public void setConfId(String confId) {
-        this.confId = confId;
-    }
-
-    private String confId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -262,7 +252,6 @@ public class MainActivity extends AppCompatActivity
 
 
     public void launchValidation(String confId) {
-        this.confId = confId;
         navigateToFragment(new Conference_A_Valider_Fragment());
     }
 
@@ -286,5 +275,12 @@ public class MainActivity extends AppCompatActivity
                         navigateToFragment(ConfFragment);
                     }
                 });
+    }
+
+    private void navigateToFragment(Fragment targetFragment) {
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, targetFragment)
+                .commit();
     }
 }
