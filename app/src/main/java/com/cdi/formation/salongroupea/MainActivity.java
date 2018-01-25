@@ -246,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Hydratation de l'objet user
         String[] name = fbUser.getDisplayName().split(" ");
         currentUser.setName(name[0]);
-        currentUser.setPrenom(name[1]);
+        currentUser.setFirstName(name[1]);
         currentUser.setEmail(fbUser.getEmail());
         currentUser.setUserId(fbUser.getUid());
 

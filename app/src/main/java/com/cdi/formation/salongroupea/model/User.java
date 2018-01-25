@@ -37,8 +37,8 @@ public class User {
         return firstName;
     }
 
-    public User setPrenom(String first_name) {
-        this.firstName = first_name;
+    public User setFirstName(String firstName) {
+        this.firstName = firstName;
         return this;
     }
 
