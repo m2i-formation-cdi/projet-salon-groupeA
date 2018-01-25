@@ -21,6 +21,21 @@ import android.widget.Toast;
 import android.widget.TextView;
 import android.widget.Toast;
 
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, InterfaceActivity {
+
+
+//Gestion de la référence Conférence pour le formulaire validation conf en attente
+    @Override
+    public String getConfId() {
+        return confId;
+    }
+    @Override
+    public void setConfId(String confId) {
+        this.confId = confId;
+    }
+
+    private String confId;
 import com.cdi.formation.salongroupea.model.User;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -157,15 +172,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigateToFragment(new FragmentAddConference());
 
         } else if (id == R.id.validateConf) {
-        }
-        else if (id == R.id.validateConf) {
 
+        } else if (id == R.id.validateConf2) {
+            navigateToFragment(new Conference_A_Valider_Fragment());
         }
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void navigateToFragment(Fragment targetFragment) {
+        getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, targetFragment).commit();
     }
 
     //lancement de la procédure d'authentification
