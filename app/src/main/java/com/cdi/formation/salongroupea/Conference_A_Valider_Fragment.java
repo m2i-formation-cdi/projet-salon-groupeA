@@ -67,10 +67,13 @@ public class Conference_A_Valider_Fragment extends Fragment {
         referenceBD = firebaseDatabase.getReference().child("conference");
         final MainActivity activity = (MainActivity) getActivity();
         //Récupération de la conférence via ID
-        //confId = activity.getConfId();
+
+        confId = activity.getConfId();
 
         //test récupération des données de Conférence
-        confId = "-L3Y5U4ztX31S7dmB-64";
+        //confId = "2";
+
+
 
         Button butonValidate = view.findViewById(R.id.buttonValidate);
         Button buttonCancel = view.findViewById(R.id.buttonCancel);
@@ -86,7 +89,12 @@ public class Conference_A_Valider_Fragment extends Fragment {
                         conference = confSnap.getValue(Conference.class);
                     }
                     */
-
+                textViewTitleView.setText(conference.getTitle());
+                textViewThemeView.setText(conference.getTheme());
+                textViewDescriptionView.setText(conference.getDescription());
+                textViewFirstNameView.setText(conference.getSpeaker().getFirstName());
+                textViewTitleSpeakerNameView.setText(conference.getSpeaker().getName());
+                textViewLocationView.setText(conference.getLocation());
 
                 }
 
@@ -112,8 +120,9 @@ public class Conference_A_Valider_Fragment extends Fragment {
                     Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
                     toast.show();
 
+
                     //Naviguer vers ListeConferencesEnAttente
-                    // activity.navigateToFragment(new ListeConferencesEnAttente());
+                    activity.navigateToFragment(new ListeConferencesEnAttente());
                 }
             });
             //Gestion du clic sur le bouton Annuler
@@ -126,7 +135,7 @@ public class Conference_A_Valider_Fragment extends Fragment {
                     toast.show();
 
                     //Naviguer vers ListeConferencesEnAttente
-                    //activity.navigateToFragment(new ListeConferencesEnAttente());
+                    activity.navigateToFragment(new ListeConferencesEnAttente());
                 }
             });
 
