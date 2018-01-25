@@ -17,6 +17,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private DatabaseReference userReference;
     private FirebaseDatabase firebaseDatabase;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.currentUser = new User();
         Fragment ConfFragment = new ConfListFragment();
         navigateToFragment(ConfFragment);
+
     }
 
     @Override

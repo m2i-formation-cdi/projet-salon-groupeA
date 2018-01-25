@@ -7,6 +7,10 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.cdi.formation.salongroupea.MainActivity"
     tools:showIn="@layout/app_bar_main">
+   <Spinner
+       android:id="@+id/spinnerTheme"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content" />
 
    <ListView
        android:id="@+id/confListView"

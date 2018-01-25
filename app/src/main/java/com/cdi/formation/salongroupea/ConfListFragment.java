@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,11 +40,14 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference confReference;
     private List<Conference> confList = new ArrayList<>();
+    private List<Conference> filteredList = new ArrayList<>();
     private int selectedIndex;
     private ListView confListView;
     private ConfArrayAdapter adapter;
+    private Spinner spinner;
+    private String [] theme = {"Toutes","Java", "Android", "PHP"};
 
-    //private User currentUser = new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
+
     private User currentUser = new User();
 
     public ConfListFragment() {
@@ -57,6 +61,9 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
         FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
         //Affichage des infos utilisateur
         //Toast.makeText(this.getActivity(), "fbUser = "+ fbUser.toString() , Toast.LENGTH_SHORT).show();
+
+        View view = inflater.inflate(R.layout.fragment_conf_list, container, false);
+
 
         if (fbUser != null) {
             Log.i("FIREBASE_USER","il existe un utilisateur FBUSER");
@@ -77,7 +84,6 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
         }
         firebaseDatabase = FirebaseDatabase.getInstance();
         confReference = firebaseDatabase.getReference().child("conference");
-        View view = inflater.inflate(R.layout.fragment_conf_list, container, false);
         confListView = view.findViewById(R.id.confListView);
         //creation de la vue qui liste les livres
         adapter = new ConfArrayAdapter(this.getActivity(), R.layout.conf_list_item);
@@ -98,6 +104,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                     if (conf.getDay() != null) {
                         //ajout du livre a la liste
                         confList.add(conf);
+                        filteredList.add(conf);
                     }
                 }
                 Log.d(" MAIN", "------------------- Fin de recuperation des données -----------------------");
@@ -110,9 +117,15 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
             }
         });
         Log.d("MAIN", " ------------------------ Fin de onCreate() -------------------------------");
-        ((ViewGroup) confListView.getParent()).removeView(confListView);
-        // Inflate the layout for this fragment
-        return confListView;
+
+
+        spinner = view.findViewById(R.id.spinnerTheme);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item ,theme);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter1);
+        spinner.setOnItemSelectedListener(this);
+
+        return view;
     }
 
     private class ConfArrayAdapter extends ArrayAdapter<Conference> {
@@ -122,25 +135,20 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
         List<Conference> data;
 
         public ConfArrayAdapter(@NonNull Context context, int resource) {
-            super(getActivity(), R.layout.conf_list_item, confList);
+            super(getActivity(), R.layout.conf_list_item, filteredList);
         }
 
         @NonNull
         @Override
         public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            //    LayoutInflater inflater = this.context.getLayoutInflater();
-            //    final View view = inflater.inflate(R.layout.details, parent, false);
-            //Récupération de l'utilisateur sur lequel on vient de cliquer
-            Conference selectedConference = confList.get(position);
-            //new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
+
             View view = getActivity().getLayoutInflater().inflate(R.layout.conf_list_item, parent, false);
-            final Conference currentConf = confList.get(position);
+            final Conference currentConf = filteredList.get(position);
             TextView textView = view.findViewById(R.id.confListText);
             textView.setText(currentConf.getTitle());
             Button button = view.findViewById(R.id.buttonRegister);
 
 
-            //Toast.makeText(getActivity(), currentUser.getEmail() , Toast.LENGTH_SHORT).show();
 
             if (currentUser.getUserId() != null) {
                 Log.i("CURRENT_USER","il existe un utilisateur AUTH, activation du bouton..."+currentUser.getName());
@@ -157,21 +165,15 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                 }
             }else       {  Log.i("CURRENT_USER","On a pas trouvé de CURRENT_USER");}
 
-            //Log.i("USERID", firebaseDatabase.getReference("conference/" + conferenceItem.getRefKey() + "/attendents/"+currentUser.getUserId()).toString());
+
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //Récupération de l'utilisateur sur lequel on vient de cliquer
                     Conference selectedConference = confList.get(position);
-                    new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
                     selectedConference.getAttendents().add(currentUser);
                     Toast.makeText(getContext(), selectedConference.getTitle() + "key =" + selectedConference.getRefKey(), Toast.LENGTH_SHORT).show();
-                    //    Log.i("Action :", "Isncritpion");
-                    //  Log.i("titre :", selectedConference.getTitle());
-                    //  Log.i("prenom :", selectedConference.getAttendents().get(position).getFirstName());
-                    //  Log.i("nom :", selectedConference.getAttendents().get(position).getName());
-                    //String conf = confReference.child("attendents").push().getKey();
-                    // confReference.child("attendents").setValue(selectedConference);
+
                     firebaseDatabase.getReference().child("conference").child(selectedConference.getRefKey()).setValue(selectedConference);
                 }
             });
@@ -202,17 +204,42 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         this.selectedIndex = position;
         adapter.notifyDataSetChanged();
+
+
+
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         this.selectedIndex = position;
-        adapter.notifyDataSetChanged();
-    }
+
+        String selection = theme[position];
+        if(! selection.equals("Toutes")){
+            filteredList.clear();
+            for (int i = 0; i < confList.size(); i++) {
+                Conference conf = confList.get(i);
+                if (conf.getTheme().equalsIgnoreCase(selection)) {
+                    filteredList.add(conf);
+                }
+            }
+            adapter.notifyDataSetChanged();
+        }
+        else{
+            filteredList.clear();
+            for (int i = 0; i < confList.size(); i++) {
+                Conference conf = confList.get(i);
+                    filteredList.add(conf);
+                }
+            }
+            adapter.notifyDataSetChanged();
+        }
+
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
     }
+
+
 }
 
 
