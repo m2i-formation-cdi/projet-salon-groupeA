@@ -2,12 +2,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.cdi.formation.salongroupea.ConfListFragment">
+    tools:context="com.cdi.formation.salongroupea.ConfListFragment"
+    >
 
     <!-- TODO: Update blank fragment layout -->
-   <ListView
-       android:id="@+id/confListView"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"></ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/spinnerTheme"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="250dp"/>
+
+        <ListView
+            android:id="@+id/confListView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="9"/>
+
+
+    </LinearLayout>
+
 
 </FrameLayout>

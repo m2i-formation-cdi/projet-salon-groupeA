@@ -23,6 +23,7 @@ public class Conference {
     public Conference() {
     }
 
+
     public Conference(String title, String description, String theme, String day, String startHour, String location,
                       String latitude, String longitude, User speaker, List<User> attendents, List<Comments> comments) {
         this.title = title;
