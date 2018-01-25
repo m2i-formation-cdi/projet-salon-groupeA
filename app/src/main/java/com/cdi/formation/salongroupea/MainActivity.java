@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity
 
     public void launchValidation(String confId) {
         this.confId = confId;
-        navigateToFragment(new FragmentManageTheme());
+        navigateToFragment(new Conference_A_Valider_Fragment());
     }
 
     public void onLogout(MenuItem item) {

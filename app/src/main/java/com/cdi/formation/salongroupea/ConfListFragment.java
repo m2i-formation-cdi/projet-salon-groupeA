@@ -190,7 +190,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                 notation.setEnabled(true);
                 Conference conferenceItem = confList.get(position);
                 //Boolean foundUser = false;
-                if (conferenceItem.attendents != null) {
+                if (conferenceItem.attendents != null && conferenceItem.getComments() != null ) {
                     //Verification que l'utilisateur authentifié est inscrit a la conf
                     for (User user1 : conferenceItem.attendents) {
                         if (user1.getUserId().equals(currentUser.getUserId())) {

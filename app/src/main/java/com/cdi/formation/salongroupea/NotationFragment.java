@@ -17,6 +17,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NotationFragment extends Fragment {
 
     private FirebaseDatabase firebaseDatabase;
@@ -43,7 +46,6 @@ public class NotationFragment extends Fragment {
         String confKey = b.get("ConfKey").toString();
         String selectedUser = b.get("SelectedUser").toString();
 
-
         firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseDatabase.getReference().child("conference").child(confKey).addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -59,12 +61,10 @@ public class NotationFragment extends Fragment {
                 }
         );
 
-
         //Ajouter une note et un commentaire appel du fragment NotationFragment
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
 
                 Float rateVal = rate.getRating();
                 String commentVal = comment.getText().toString();
@@ -78,8 +78,9 @@ public class NotationFragment extends Fragment {
                 com.setAuthorId(selectedUser);
                 com.setMessage(commentVal);
                 com.setRate(String.valueOf(rateVal));
-
-                conf.addComment(com);
+                List<Comments> listCom = new ArrayList<>();
+                listCom.add(com);
+                conf.setComments(listCom);
 
                 firebaseDatabase = FirebaseDatabase.getInstance();
                 firebaseDatabase.getReference().child("conference").child(confKey).setValue(conf);

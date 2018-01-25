@@ -15,6 +15,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cdi.formation.salongroupea.model.Conference;
+import com.cdi.formation.salongroupea.model.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,6 +38,7 @@ public class FragmentValidConference extends Fragment implements AdapterView.OnI
     private List<Conference> confList = new ArrayList<>();
     private ListView lvConference;
     private ConfArrayAdapter adapter;
+    private User currentUser = new User();
 
     public FragmentValidConference() {
         // Required empty public constructor
@@ -43,6 +47,33 @@ public class FragmentValidConference extends Fragment implements AdapterView.OnI
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        //Récupération de l'utilisateur connecté
+        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+        //Affichage des infos utilisateur
+        //Toast.makeText(this.getActivity(), "fbUser = "+ fbUser.toString() , Toast.LENGTH_SHORT).show();
+
+        //Activity activity = (MainActivity) getActivity();
+
+        if (fbUser != null) {
+            Log.i("FIREBASE_USER", "il existe un utilisateur FBUSER");
+
+            //if() {
+            //Hydratation de l'objet user
+            String[] name = fbUser.getDisplayName().split(" ");
+
+            currentUser.setName(name[0]);
+            currentUser.setFirstName(name[1]);
+            currentUser.setEmail(fbUser.getEmail());
+            currentUser.setUserId(fbUser.getUid());
+
+            Log.i("CURRENT_USER", "On cree le CURRENT_USER" + currentUser.getEmail());
+
+            //Toast.makeText(this.getActivity(), this.currentUser.getEmail() , Toast.LENGTH_SHORT).show();
+            //String userId = userReference.push().getKey();
+        }
+
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_valid_conference, container, false);
         lvConference = (ListView) view.findViewById(R.id.lvConference);
@@ -104,8 +135,10 @@ public class FragmentValidConference extends Fragment implements AdapterView.OnI
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        MainActivity activity = (MainActivity) getActivity();
-        activity.launchValidation(confList.get(i).getRefKey());
+       // MainActivity activity = (MainActivity) getActivity();
+       // activity.launchValidation(confList.get(i).getRefKey());
+
+
     }
 
     private class ConfArrayAdapter extends ArrayAdapter<Conference> {
@@ -133,8 +166,42 @@ public class FragmentValidConference extends Fragment implements AdapterView.OnI
             TextView Description = view.findViewById(R.id.edtDescription);
             Description.setText(currentConf.getDescription());
 
+            //Ajouter une note et un commentaire appel du fragment NotationFragment
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    //map
+                    Conference selectedConference = confList.get(position);
+                    //Création d'un intention pour l'affichage de la carte
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("Title", selectedConference.getTitle());
+                    bundle.putString("Theme", selectedConference.getTheme());
+                    bundle.putString("Description", selectedConference.getDescription());
+                    bundle.putString("RefKey", selectedConference.getRefKey());
+
+                    bundle.putString("SelectedUser", currentUser.getUserId());
+
+                    Conference_A_Valider_Fragment validationConf = new Conference_A_Valider_Fragment();
+                    validationConf.setArguments(bundle);
+
+                    navigateToFragment(validationConf);
+
+                }
+            });
+
+
             return view;
         }
     }
+
+    private void navigateToFragment(Conference_A_Valider_Fragment targetFragment) {
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, targetFragment)
+                .commit();
+    }
+
 
 }

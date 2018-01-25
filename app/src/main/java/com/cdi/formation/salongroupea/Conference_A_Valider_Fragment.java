@@ -1,9 +1,10 @@
 package com.cdi.formation.salongroupea;
 
-
-import android.app.Activity;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-
 public class Conference_A_Valider_Fragment extends Fragment {
 
     //Création des attributs
@@ -31,16 +31,13 @@ public class Conference_A_Valider_Fragment extends Fragment {
     private TextView textViewTitleSpeakerNameView;
     private TextView textViewFirstNameView;
     private TextView textViewDescriptionView;
+    private int selectedIndex;
     private EditText editTextDay;
     private EditText editTextStartHour;
     private EditText editTextLatitude;
     private EditText editTextLongitude;
     private Conference conference;
     private String confId;
-
-
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,11 +47,11 @@ public class Conference_A_Valider_Fragment extends Fragment {
 
         //Instanciation des Attributs
         textViewTitleView = (TextView) view.findViewById(R.id.textViewTitleView);
-        textViewThemeView  = (TextView) view.findViewById(R.id.textViewThemeView);
-        textViewLocationView  = (TextView) view.findViewById(R.id.textViewLocationView);
-        textViewTitleSpeakerNameView  = (TextView) view.findViewById(R.id.textViewTitleSpeakerNameView);
-        textViewFirstNameView  = (TextView) view.findViewById(R.id.textViewFirstNameView);
-        textViewDescriptionView  = (TextView) view.findViewById(R.id.textViewDescriptionView);
+        textViewThemeView = (TextView) view.findViewById(R.id.textViewThemeView);
+        textViewLocationView = (TextView) view.findViewById(R.id.textViewLocationView);
+        textViewTitleSpeakerNameView = (TextView) view.findViewById(R.id.textViewTitleSpeakerNameView);
+        textViewFirstNameView = (TextView) view.findViewById(R.id.textViewFirstNameView);
+        textViewDescriptionView = (TextView) view.findViewById(R.id.textViewDescriptionView);
         editTextDay = (EditText) view.findViewById(R.id.editTextDay);
         editTextStartHour = (EditText) view.findViewById(R.id.editTextStartHour);
         editTextLatitude = (EditText) view.findViewById(R.id.editTextLatitude);
@@ -66,35 +63,59 @@ public class Conference_A_Valider_Fragment extends Fragment {
         //Update de la bd
         referenceBD = firebaseDatabase.getReference().child("conference");
         final MainActivity activity = (MainActivity) getActivity();
+
+        //On recupere le Bundle de Fragment appellant
+        Bundle b = getArguments();
+        String refKey = b.get("RefKey").toString();
+
+
         //Récupération de la conférence via ID
         //confId = activity.getConfId();
 
+        confId = refKey;
         //test récupération des données de Conférence
-        confId = "-L3Y5U4ztX31S7dmB-64";
+        // confId = "-L3Y5U4ztX31S7dmB-64";
 
         Button butonValidate = view.findViewById(R.id.buttonValidate);
         Button buttonCancel = view.findViewById(R.id.buttonCancel);
 
-        if(confId != null) {
+        if (confId != null) {
             referenceBD.child(confId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                     conference = dataSnapshot.getValue(Conference.class);
-/*
+                    Log.i("DATA SNAPSHOT", conference.getTitle() + " " + conference.getRefKey());
+
+                    /*
                     for (DataSnapshot confSnap : dataSnapshot.getChildren()) {
                         conference = confSnap.getValue(Conference.class);
                     }
                     */
 
-
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {}
+                public void onCancelled(DatabaseError databaseError) {
+                }
             });
 
-            //Gestion du clic sur le bouton valider
+
+
+            String title = b.get("Title").toString();
+            String theme = b.get("Theme").toString();
+            String description = b.get("Description").toString();
+             refKey = b.get("RefKey").toString();
+            String selectedUser = b.get("SelectedUser").toString();
+
+            Log.i("AFFICHAGE DU TITRE ", title + " et le Key : " + refKey);
+            textViewTitleView.setText(title);
+
+            Log.i("AFFICHAGE DU THEME ", theme + " et le Key : " + refKey);
+            textViewThemeView.setText(theme);
+
+            Log.i("AFFIC DE LA DESCR", description + " et le Key : " + refKey);
+            textViewDescriptionView.setText(description);
 
             butonValidate.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -112,6 +133,9 @@ public class Conference_A_Valider_Fragment extends Fragment {
                     Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
                     toast.show();
 
+                    ConfListFragment ConfFragment = new ConfListFragment();
+                    navigateToFragment(ConfFragment);
+
                     //Naviguer vers ListeConferencesEnAttente
                     // activity.navigateToFragment(new ListeConferencesEnAttente());
                 }
@@ -125,13 +149,16 @@ public class Conference_A_Valider_Fragment extends Fragment {
                     Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
                     toast.show();
 
+                    ConfListFragment ConfFragment = new ConfListFragment();
+                    navigateToFragment(ConfFragment);
+
                     //Naviguer vers ListeConferencesEnAttente
                     //activity.navigateToFragment(new ListeConferencesEnAttente());
                 }
             });
 
-        }else {
-                butonValidate.setVisibility(View.INVISIBLE);
+        } else {
+            butonValidate.setVisibility(View.INVISIBLE);
         }
 
         buttonCancel.setOnClickListener(new View.OnClickListener() {
@@ -149,4 +176,13 @@ public class Conference_A_Valider_Fragment extends Fragment {
 
         return view;
     }
+
+
+    private void navigateToFragment(ConfListFragment targetFragment) {
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, targetFragment)
+                .commit();
+    }
+
 }

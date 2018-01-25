@@ -37,7 +37,7 @@ public class FragmentAddConference extends Fragment {
     private TextView name;
     private Button btnValid;
     private int titi;
-    private User currentUser;
+    private User currentUser = new User();
 
     public FragmentAddConference() {
 
@@ -63,7 +63,7 @@ public class FragmentAddConference extends Fragment {
             //if() {
             //Hydratation de l'objet user
             String[] name = fbUser.getDisplayName().split(" ");
-
+            Log.i("CURRENT USER","nom : "+ name[0]+" et prenom : "+name[1] );
             currentUser.setName(name[0]);
             currentUser.setFirstName(name[1]);
             currentUser.setEmail(fbUser.getEmail());
@@ -146,10 +146,14 @@ public class FragmentAddConference extends Fragment {
             conference.setTitle(title.getText().toString());
             conference.setTheme(spTheme.getSelectedItem().toString());
             conference.setDescription(description.getText().toString());
+
+
             conference.setSpeaker(currentUser);
 
             // Chargement des données
             String confId = ConfReference.push().getKey();
+            conference.setRefKey(confId); //sauvegarde de lid de la conf dans l'objet conference
+
             ConfReference.child(confId).setValue(conference);
 
             Toast.makeText(getActivity(), "Enregistrement de la conférence effectuée!", Toast.LENGTH_LONG).show();
