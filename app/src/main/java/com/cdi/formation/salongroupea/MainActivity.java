@@ -1,41 +1,22 @@
 package com.cdi.formation.salongroupea;
 
 import android.app.Fragment;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, InterfaceActivity {
-
-
-//Gestion de la référence Conférence pour le formulaire validation conf en attente
-    @Override
-    public String getConfId() {
-        return confId;
-    }
-    @Override
-    public void setConfId(String confId) {
-        this.confId = confId;
-    }
-
-    private String confId;
 import com.cdi.formation.salongroupea.model.User;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -52,7 +33,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, InterfaceActivity {
 
     public final int LOGIN_REQUESTCODE = 1;
     private FirebaseUser fbUser;
@@ -64,7 +46,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DatabaseReference userReference;
     private FirebaseDatabase firebaseDatabase;
 
-    private int toto=5;
+    private int toto = 5;
+
+    //Gestion de la référence Conférence pour le formulaire validation conf en attente
+    @Override
+    public String getConfId() {
+        return confId;
+    }
+
+    @Override
+    public void setConfId(String confId) {
+        this.confId = confId;
+    }
+
+    private String confId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,16 +76,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        navigateToFragment(new ConfListFragment());
 
         //Reference aux textview dans l'entête de la navigation
-        View headerView = ((NavigationView)navigationView.findViewById(R.id.nav_view)).getHeaderView(0);
+        View headerView = ((NavigationView) navigationView.findViewById(R.id.nav_view)).getHeaderView(0);
         userEmailTextView = headerView.findViewById(R.id.headerUserEmail);
         userNameTextView = headerView.findViewById(R.id.headerUserName);
         FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
-
-
-
 
         Fragment ConfFragment = new ConfListFragment();
         navigateToFragment(ConfFragment);
@@ -97,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (fbUser != null) {
             userNameTextView.setText((fbUser.getDisplayName()));
             userEmailTextView.setText((fbUser.getEmail()));
-
 
             userReference.child(fbUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -119,8 +110,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             affichageLogInOut();
 
         }
-
-
 
     }
 
@@ -172,16 +161,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigateToFragment(new FragmentAddConference());
 
         } else if (id == R.id.validateConf) {
-
-        } else if (id == R.id.validateConf2) {
-            navigateToFragment(new Conference_A_Valider_Fragment());
-        }
-        else if (id == R.id.validateConf) {
             navigateToFragment(new FragmentValidConference());
-        }else if( id == R.id.manageTheme){
-            navigateToFragment(new FragmentManageTheme());
         }
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -216,7 +197,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     userNameTextView.setText((fbUser.getDisplayName()));
                     userEmailTextView.setText((fbUser.getEmail()));
 
-
                     userReference.child(fbUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -247,7 +227,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //Fermeture du drawer navView
                 drawer.closeDrawer(GravityCompat.START);
 
-
             } else {
                 if (response != null) {
                     Log.d("Main", " Erreur Fireauth code: " + response.getErrorCode());
@@ -276,14 +255,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private void navigateToFragment(Fragment targetFragment) {
-        getFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, targetFragment)
-                .commit();
-    }
 
-    public void launchValidation(String confId){
+
+    public void launchValidation(String confId) {
         this.confId = confId;
         navigateToFragment(new FragmentManageTheme());
     }

@@ -1,25 +1,20 @@
 package com.cdi.formation.salongroupea;
 
-
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cdi.formation.salongroupea.model.Conference;
-import com.cdi.formation.salongroupea.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,11 +25,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FragmentValidConference extends Fragment implements AdapterView.OnItemClickListener{
+public class FragmentValidConference extends Fragment implements AdapterView.OnItemClickListener {
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference confReference;
     private List<Conference> confListSource = new ArrayList<>();
@@ -46,14 +40,12 @@ public class FragmentValidConference extends Fragment implements AdapterView.OnI
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_valid_conference, container, false);
+        View view = inflater.inflate(R.layout.fragment_valid_conference, container, false);
         lvConference = (ListView) view.findViewById(R.id.lvConference);
-
 
         // charger les données dans une liste
         // et liaison avec l'écouteur
@@ -70,14 +62,14 @@ public class FragmentValidConference extends Fragment implements AdapterView.OnI
                 for (DataSnapshot confSnap : dataSnapshot.getChildren()) {
                     //creation d'une instance darticle et hydratation avec les données du snapshot
                     Conference conf = confSnap.getValue(Conference.class);
-                    conf.setConfId(confSnap.getKey());
+                    conf.setRefKey(confSnap.getKey());
                     //ajout du livre a la liste
                     confListSource.add(conf);
                 }
                 //
-               // Toast.makeText(getActivity(),confListSource.get(0).getTitle(),Toast.LENGTH_LONG).show();
+                // Toast.makeText(getActivity(),confListSource.get(0).getTitle(),Toast.LENGTH_LONG).show();
 
-                Collections.sort(confListSource);
+               // Collections.sort(confListSource);
                 filtrerConference();
                 adapter.notifyDataSetChanged();
             }
@@ -96,14 +88,12 @@ public class FragmentValidConference extends Fragment implements AdapterView.OnI
         adapter = new ConfArrayAdapter(this.getActivity());
         lvConference.setAdapter(adapter);
 
-
         // aiguillage vers la validation avec les informations nécessaires : id conference
         return view;
     }
 
-
-    public void filtrerConference(){
-        for (int i =0; i < confListSource.size(); i++){
+    public void filtrerConference() {
+        for (int i = 0; i < confListSource.size(); i++) {
             Conference conf = new Conference();
             conf = confListSource.get(i);
             if (conf.getDay() == null) {
@@ -115,10 +105,8 @@ public class FragmentValidConference extends Fragment implements AdapterView.OnI
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         MainActivity activity = (MainActivity) getActivity();
-        activity.launchValidation(confList.get(i).getConfId());
+        activity.launchValidation(confList.get(i).getRefKey());
     }
-
-
 
     private class ConfArrayAdapter extends ArrayAdapter<Conference> {
 
@@ -144,7 +132,6 @@ public class FragmentValidConference extends Fragment implements AdapterView.OnI
 
             TextView Description = view.findViewById(R.id.edtDescription);
             Description.setText(currentConf.getDescription());
-
 
             return view;
         }
