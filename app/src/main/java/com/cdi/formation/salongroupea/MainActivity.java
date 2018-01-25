@@ -176,6 +176,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.validateConf2) {
             navigateToFragment(new Conference_A_Valider_Fragment());
         }
+        else if (id == R.id.validateConf) {
+            navigateToFragment(new FragmentValidConference());
+        }else if( id == R.id.manageTheme){
+            navigateToFragment(new FragmentManageTheme());
+        }
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -276,6 +281,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, targetFragment)
                 .commit();
+    }
+
+    public void launchValidation(String confId){
+        this.confId = confId;
+        navigateToFragment(new FragmentManageTheme());
     }
 
     public void onLogout(MenuItem item) {
