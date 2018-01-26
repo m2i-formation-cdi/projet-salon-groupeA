@@ -98,6 +98,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //reinitialiser la list
                 confList.clear();
+                filteredList.clear();
                 //boucler sur lensemble des noeuds
                 for (DataSnapshot confSnap : dataSnapshot.getChildren()) {
                     String key = confSnap.getKey();
