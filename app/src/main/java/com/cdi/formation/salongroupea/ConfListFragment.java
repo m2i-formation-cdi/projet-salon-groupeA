@@ -19,7 +19,6 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cdi.formation.salongroupea.model.Comments;
 import com.cdi.formation.salongroupea.model.Conference;
@@ -50,7 +49,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
     private int color = 0;
 
     private Spinner spinner;
-    private String [] theme = {"Toutes","Mes Conférences","Java", "Android", "PHP"};
+    private String[] theme = {"Toutes", "Mes Conférences", "Java", "Android", "PHP"};
 
     //private User currentUser = new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
     public User currentUser = new User();
@@ -68,7 +67,6 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
         FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
         //Affichage des infos utilisateur
         //Toast.makeText(this.getActivity(), "fbUser = "+ fbUser.toString() , Toast.LENGTH_SHORT).show();
-
 
         if (fbUser != null) {
             Log.i("FIREBASE_USER", "il existe un utilisateur FBUSER");
@@ -126,9 +124,8 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
         });
         Log.d("MAIN", " ------------------------ Fin de onCreate() -------------------------------");
 
-
         spinner = view.findViewById(R.id.spinnerTheme);
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,theme);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, theme);
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter1);
         spinner.setOnItemSelectedListener(this);
@@ -141,7 +138,6 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
         private Fragment context;
         int resource;
         List<Conference> data;
-
 
         public ConfArrayAdapter(@NonNull Context context, int resource) {
             super(getActivity(), R.layout.conf_list_item, filteredList);
@@ -187,7 +183,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
             textView.setText(currentConf.getTitle());
 
             //recuperation des boutons
-            Button button = view.findViewById(R.id.buttonRegister);
+            final Button button = view.findViewById(R.id.buttonRegister);
             Button notation = view.findViewById(R.id.buttonRating);
             ImageView image = view.findViewById(R.id.getMap);
 
@@ -199,15 +195,18 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                 notation.setEnabled(true);
                 Conference conferenceItem = filteredList.get(position);
                 //Boolean foundUser = false;
-                if (conferenceItem.attendents != null && conferenceItem.getComments() != null) {
+                Log.i("CURENNT USER", currentUser.getName());
+                if (conferenceItem.attendents != null) {
                     //Verification que l'utilisateur authentifié est inscrit a la conf
                     for (User user1 : conferenceItem.attendents) {
                         if (user1.getUserId().equals(currentUser.getUserId())) {
-                            button.setEnabled(false);
+                            Log.i("CURRENT USER", " IL n'est pas inscrit");
+                            button.setText("Se désinscrire");
                             break;
                         }
                     }
-
+                }
+                if (conferenceItem.getComments() != null) {
                     //Verification que l'utilisateur authentifié a deja mis une note a la conf
                     for (Comments com1 : conferenceItem.comments) {
                         if (com1.getAuthorId().equals(currentUser.getUserId())) {
@@ -224,18 +223,49 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Récupération de l'utilisateur sur lequel on vient de cliquer
-                    Conference selectedConference = filteredList.get(position);
-                   // new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
-                    selectedConference.getAttendents().add(currentUser);
-                    Toast.makeText(getContext(), selectedConference.getTitle() + "key =" + selectedConference.getRefKey(), Toast.LENGTH_SHORT).show();
-                    //    Log.i("Action :", "Isncritpion");
-                    //  Log.i("titre :", selectedConference.getTitle());
-                    //  Log.i("prenom :", selectedConference.getAttendents().get(position).getFirstName());
-                    //  Log.i("nom :", selectedConference.getAttendents().get(position).getName());
-                    //String conf = confReference.child("attendents").push().getKey();
-                    // confReference.child("attendents").setValue(selectedConference);
-                    firebaseDatabase.getReference().child("conference").child(selectedConference.getRefKey()).setValue(selectedConference);
+
+                    if (button.getText().equals("Se désinscrire")) {
+
+                        //Récupération de l'utilisateur sur lequel on vient de cliquer
+                        Conference selectedConference = filteredList.get(position);
+                        Integer i = 0;
+                        for (User att : selectedConference.getAttendents()) {
+
+                            if (att.getUserId().equals(currentUser.getUserId())) {
+
+                                break;
+                            }
+                            i++;
+                        }
+                        selectedConference.getAttendents().remove(0);
+
+
+                        //Toast.makeText(getContext(), "Suppression : " + selectedConference.getTitle() + "key =" + selectedConference.getRefKey(), Toast.LENGTH_SHORT).show();
+
+
+                        firebaseDatabase.getReference().child("conference").child(selectedConference.getRefKey()).setValue(selectedConference);
+                       // Log.i("SELECTED CONF", selectedConference.getAttendents().get(i).getName());
+
+                    } else {
+
+                        //Récupération de l'utilisateur sur lequel on vient de cliquer
+                        Conference selectedConference = filteredList.get(position);
+                        // new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
+                        //Log.i("SELECTED CONF", selectedConference.getAttendents().toString());
+
+                        if (selectedConference.getAttendents() == null) {
+                            List<User> listAtt = new ArrayList<User>();
+                            listAtt.add(currentUser);
+                            selectedConference.setAttendents(listAtt);
+                        } else {
+                            selectedConference.getAttendents().add(currentUser);
+                        }
+                        //selectedConference.getAttendents().add(currentUser);
+
+                        //Toast.makeText(getContext(), selectedConference.getTitle() + "key =" + selectedConference.getRefKey(), Toast.LENGTH_SHORT).show();
+
+                        firebaseDatabase.getReference().child("conference").child(selectedConference.getRefKey()).setValue(selectedConference);
+                    }
                 }
             });
             image.setOnClickListener(new View.OnClickListener() {
@@ -278,6 +308,31 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                 }
             });
 
+            TextView com = view.findViewById(R.id.numberComments);
+
+            //   //Ajouter une note et un commentaire appel du fragment NotationFragment
+            //   com.setOnClickListener(new View.OnClickListener() {
+            //       @Override
+            //       public void onClick(View v) {
+
+            //           //map
+            //           Conference selectedConference = filteredList.get(position);
+            //           //Création d'un intention pour l'affichage de la carte
+
+            //           Bundle bundle = new Bundle();
+            //           bundle.putString("ConfKey", selectedConference.getComments());
+            //           bundle.putStringArrayList("Comments", selectedConference.getComments(). );
+            //           bundle.
+            //           bundle.putString("SelectedUser", currentUser.getUserId());
+
+            //           NotationFragment notation = new NotationFragment();
+            //           notation.setArguments(bundle);
+
+            //           navigateToFragment(notation);
+
+            //       }
+            //   });
+
             return view;
         }
     }
@@ -293,27 +348,25 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
         this.selectedIndex = position;
 
         String selection = theme[position];
-        if (selection.equals("Mes Conférences")){
+        if (selection.equals("Mes Conférences")) {
             filteredList.clear();
             Log.i("FILTERED LIST", " ------------- RAZ de la CONFLIST --------------");
             for (int i = 0; i < confList.size(); i++) {
                 Conference conf = confList.get(i);
                 if (conf.getAttendents() != null) {
-                    if(conf.getAttendents().contains(currentUser.getEmail()));
+                    if (conf.getAttendents().contains(currentUser.getEmail())) ;
                     filteredList.add(conf);
                     Log.i("FILTERED LIST", " ------------- AJOUT de la CONF --------------");
 
                 }
             }
-        }
-        else if( selection.equals("Toutes")){
+        } else if (selection.equals("Toutes")) {
             filteredList.clear();
             for (int i = 0; i < confList.size(); i++) {
                 Conference conf = confList.get(i);
                 filteredList.add(conf);
             }
-        }
-        else{
+        } else {
             filteredList.clear();
             for (int i = 0; i < confList.size(); i++) {
                 Conference conf = confList.get(i);
@@ -322,9 +375,9 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                 }
             }
             adapter.notifyDataSetChanged();
-            }
-            adapter.notifyDataSetChanged();
         }
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {

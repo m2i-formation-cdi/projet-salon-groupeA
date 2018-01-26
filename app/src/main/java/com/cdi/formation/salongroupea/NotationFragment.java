@@ -93,7 +93,7 @@ public class NotationFragment extends Fragment {
                 firebaseDatabase = FirebaseDatabase.getInstance();
                 firebaseDatabase.getReference().child("conference").child(confKey).setValue(conf);
 
-                Log.i("ECRITURE DANS LA BASE", " ------------------------------- un commentaire a ete ajouté ---------- " );
+                Log.i("ECRITURE DANS LA BASE", " ------------------------------- un commentaire a ete ajouté ---------- ");
 
                 Bundle bundle = new Bundle();
                 bundle.putString("rateVal", String.valueOf(rateVal));
@@ -104,6 +104,16 @@ public class NotationFragment extends Fragment {
 
                 ConfListFragment confListFragment = new ConfListFragment();
                 navigateToFragment(confListFragment);
+
+            }
+        });
+
+        Button cancelButton = view.findViewById(R.id.cancelComment);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                navigateToFragment(new ConfListFragment());
 
             }
         });
