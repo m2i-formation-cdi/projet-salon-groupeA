@@ -50,7 +50,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
     private int color = 0;
 
     private Spinner spinner;
-    private String[] theme = {"Toutes", "Java", "Android", "PHP", "FARID"};
+    private String [] theme = {"Toutes","Mes Conférences","Java", "Android", "PHP"};
 
     //private User currentUser = new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
     public User currentUser = new User();
@@ -123,8 +123,9 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
         });
         Log.d("MAIN", " ------------------------ Fin de onCreate() -------------------------------");
 
+
         spinner = view.findViewById(R.id.spinnerTheme);
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, theme);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,theme);
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter1);
         spinner.setOnItemSelectedListener(this);
@@ -289,28 +290,38 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
         this.selectedIndex = position;
 
         String selection = theme[position];
-        if (!selection.equals("Toutes")) {
+        if (selection.equals("Mes Conférences")){
             filteredList.clear();
             Log.i("FILTERED LIST", " ------------- RAZ de la CONFLIST --------------");
             for (int i = 0; i < confList.size(); i++) {
                 Conference conf = confList.get(i);
-                if (conf.getTheme().equalsIgnoreCase(selection)) {
+                if (conf.getAttendents() != null) {
+                    if(conf.getAttendents().contains(currentUser.getEmail()));
                     filteredList.add(conf);
                     Log.i("FILTERED LIST", " ------------- AJOUT de la CONF --------------");
 
                 }
             }
-            adapter.notifyDataSetChanged();
-        } else {
+        }
+        else if( selection.equals("Toutes")){
             filteredList.clear();
             for (int i = 0; i < confList.size(); i++) {
                 Conference conf = confList.get(i);
                 filteredList.add(conf);
             }
+        }
+        else{
+            filteredList.clear();
+            for (int i = 0; i < confList.size(); i++) {
+                Conference conf = confList.get(i);
+                if (conf.getTheme().equalsIgnoreCase(selection)) {
+                    filteredList.add(conf);
+                }
+            }
+            adapter.notifyDataSetChanged();
+            }
             adapter.notifyDataSetChanged();
         }
-
-    }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {

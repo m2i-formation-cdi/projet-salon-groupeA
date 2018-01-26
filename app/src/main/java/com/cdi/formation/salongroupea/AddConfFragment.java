@@ -36,6 +36,7 @@ public class AddConfFragment extends Fragment {
     private Spinner spTheme;
     private TextView name;
     private Button btnValid;
+    private Button btnCancel;
     private int titi;
     private User currentUser = new User();
 
@@ -96,7 +97,7 @@ public class AddConfFragment extends Fragment {
 
         name = (TextView) view.findViewById(R.id.tvName);
         // à remplaceer
-        // name = getActivity().currentUser.getName();
+        name.setText(currentUser.getName());
 
 
         // Création d'un listener sur le bouton de validation
@@ -107,7 +108,16 @@ public class AddConfFragment extends Fragment {
                 //  si les saisies sont Ok, ajoute la conférence
                 if (isInputOk()) {
                     addConference();
+                    navigateToFragment(new ConfListFragment());
                 }
+            }
+        });
+
+        btnCancel = (Button) view.findViewById(R.id.btnCancel);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    navigateToFragment(new ConfListFragment());
             }
         });
 
@@ -160,12 +170,20 @@ public class AddConfFragment extends Fragment {
             Toast.makeText(getActivity(), "Anomalie lors de l'enregistrement !" + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
+
     }
 
     public void initZones() {
         title.setText("");
         spTheme.setSelection(0);
         description.setText("");
+
+    }
+    private void navigateToFragment(Fragment targetFragment) {
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, targetFragment)
+                .commit();
     }
 
 }

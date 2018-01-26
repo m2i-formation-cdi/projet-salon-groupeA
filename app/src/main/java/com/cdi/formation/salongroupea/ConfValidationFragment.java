@@ -25,7 +25,7 @@ public class ConfValidationFragment extends Fragment {
     private DatabaseReference referenceBD;
     private TextView textViewTitleView;
     private TextView textViewThemeView;
-    private TextView textViewLocationView;
+    private EditText editViewLocationView;
     private TextView textViewTitleSpeakerNameView;
     private TextView textViewDescriptionView;
     private TextView textViewSpeaker;
@@ -46,7 +46,7 @@ public class ConfValidationFragment extends Fragment {
         //Instanciation des Attributs
         textViewTitleView = (TextView) view.findViewById(R.id.textViewTitleView);
         textViewThemeView = (TextView) view.findViewById(R.id.textViewThemeView);
-        textViewLocationView = (TextView) view.findViewById(R.id.textViewLocationView);
+        editViewLocationView = (EditText) view.findViewById(R.id.editViewLocationView);
         textViewTitleSpeakerNameView = (TextView) view.findViewById(R.id.textViewTitleSpeakerNameView);
         textViewDescriptionView = (TextView) view.findViewById(R.id.textViewDescriptionView);
         editTextDay = (EditText) view.findViewById(R.id.editTextDay);
@@ -130,6 +130,7 @@ public class ConfValidationFragment extends Fragment {
                     conference.setStartHour(editTextStartHour.getText().toString());
                     conference.setLatitude(editTextLatitude.getText().toString());
                     conference.setLongitude(editTextLongitude.getText().toString());
+                    conference.setLocation(editViewLocationView.getText().toString());
 
 
                     referenceBD.child(confId).setValue(conference);
