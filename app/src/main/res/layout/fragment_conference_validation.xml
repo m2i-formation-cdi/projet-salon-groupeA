@@ -3,9 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="15dp"
-    tools:context="com.cdi.formation.salongroupea.Conference_A_Valider_Fragment">
-
+    android:padding="10dp"
+    tools:context="com.cdi.formation.salongroupea.ConfValidationFragment">
 
     <TableLayout
         android:layout_width="wrap_content"
@@ -19,8 +18,7 @@
 
             <TextView
                 android:id="@+id/textViewTitle"
-                android:layout_weight="1"
-                android:padding="5dp"
+                android:layout_weight="5"
                 android:text="Titre : "
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
@@ -29,10 +27,9 @@
             <TextView
                 android:id="@+id/textViewTitleView"
                 android:layout_weight="1"
-                android:padding="5dp"
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="normal" />
         </TableRow>
 
         <TableRow
@@ -42,8 +39,7 @@
 
             <TextView
                 android:id="@+id/textViewTheme"
-                android:layout_weight="1"
-                android:padding="5dp"
+                android:layout_weight="5"
                 android:text="Theme : "
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
@@ -52,10 +48,9 @@
             <TextView
                 android:id="@+id/textViewThemeView"
                 android:layout_weight="1"
-                android:padding="5dp"
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="normal" />
         </TableRow>
 
         <TableRow
@@ -65,8 +60,7 @@
 
             <TextView
                 android:id="@+id/textViewSpeakerName"
-                android:layout_weight="1"
-                android:padding="5dp"
+                android:layout_weight="5"
                 android:text="Nom du conférencié : "
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
@@ -75,10 +69,9 @@
             <TextView
                 android:id="@+id/textViewTitleSpeakerNameView"
                 android:layout_weight="1"
-                android:padding="5dp"
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="normal" />
         </TableRow>
 
         <TableRow
@@ -88,10 +81,8 @@
 
             <TextView
                 android:id="@+id/textViewDescription"
-                android:layout_weight="1"
-                android:padding="5dp"
-                android:paddingBottom="0dp"
-                android:text="Déscription de la conférence : "
+                android:layout_weight="5"
+                android:text="Description : "
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -101,7 +92,7 @@
                 android:layout_weight="1"
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="normal" />
         </TableRow>
 
         <TableRow
@@ -111,8 +102,7 @@
 
             <TextView
                 android:id="@+id/textViewDay"
-                android:layout_weight="2"
-                android:padding="5dp"
+                android:layout_weight="5"
                 android:text="Date : "
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
@@ -126,6 +116,8 @@
                 android:inputType="textPersonName"
                 android:singleLine="false"
                 android:textAlignment="viewStart"
+                android:textColor="@color/colorPrimary"
+
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </TableRow>
@@ -137,8 +129,7 @@
 
             <TextView
                 android:id="@+id/textViewStartHour"
-                android:layout_weight="2"
-                android:padding="5dp"
+                android:layout_weight="5"
                 android:text="Heure de début :"
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
@@ -151,6 +142,8 @@
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:textAlignment="viewStart"
+                android:textColor="@color/colorPrimary"
+
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </TableRow>
@@ -162,8 +155,7 @@
 
             <TextView
                 android:id="@+id/textViewLocation"
-                android:layout_weight="2"
-                android:padding="5dp"
+                android:layout_weight="5"
                 android:text="Lieu : "
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
@@ -186,8 +178,7 @@
 
             <TextView
                 android:id="@+id/textViewLatitude"
-                android:layout_weight="2"
-                android:padding="5dp"
+                android:layout_weight="5"
                 android:text="Latitude : "
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
@@ -200,6 +191,8 @@
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:textAlignment="viewStart"
+                android:textColor="@color/colorPrimary"
+
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </TableRow>
@@ -211,8 +204,7 @@
 
             <TextView
                 android:id="@+id/textViewLongitude"
-                android:layout_weight="2"
-
+                android:layout_weight="5"
                 android:text="Longitude : "
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
@@ -225,6 +217,7 @@
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:textAlignment="viewStart"
+                android:textColor="@color/colorPrimary"
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </TableRow>
@@ -253,6 +246,4 @@
         </LinearLayout>
 
     </TableLayout>
-
-
 </FrameLayout>

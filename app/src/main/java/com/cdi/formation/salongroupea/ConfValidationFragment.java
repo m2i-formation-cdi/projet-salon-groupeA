@@ -2,8 +2,6 @@ package com.cdi.formation.salongroupea;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class Conference_A_Valider_Fragment extends Fragment {
+public class ConfValidationFragment extends Fragment {
 
     //Création des attributs
     private FirebaseDatabase firebaseDatabase;
@@ -43,7 +41,7 @@ public class Conference_A_Valider_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_conference__a__valider_, container, false);
+        View view = inflater.inflate(R.layout.fragment_conference_validation, container, false);
 
         //Instanciation des Attributs
         textViewTitleView = (TextView) view.findViewById(R.id.textViewTitleView);

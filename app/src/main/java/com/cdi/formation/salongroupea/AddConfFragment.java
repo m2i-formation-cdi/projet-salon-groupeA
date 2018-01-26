@@ -25,7 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FragmentAddConference extends Fragment {
+public class AddConfFragment extends Fragment {
     // DrawerActivity parentActivity;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference ConfReference;
@@ -39,7 +39,7 @@ public class FragmentAddConference extends Fragment {
     private int titi;
     private User currentUser = new User();
 
-    public FragmentAddConference() {
+    public AddConfFragment() {
 
         // Required empty public constructor
     }
