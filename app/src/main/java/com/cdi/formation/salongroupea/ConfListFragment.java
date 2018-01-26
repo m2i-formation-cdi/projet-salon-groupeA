@@ -248,6 +248,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
 
                     } else {
 
+
                         //Récupération de l'utilisateur sur lequel on vient de cliquer
                         Conference selectedConference = filteredList.get(position);
                         // new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
