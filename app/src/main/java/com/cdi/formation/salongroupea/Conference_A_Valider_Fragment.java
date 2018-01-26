@@ -130,37 +130,20 @@ public class Conference_A_Valider_Fragment extends Fragment {
                     referenceBD.child(confId).setValue(conference);
 
                     String message = "La conférence a été validée !";
-                    Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
-                    toast.show();
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+
 
                     ConfListFragment ConfFragment = new ConfListFragment();
                     navigateToFragment(ConfFragment);
 
-                    //Naviguer vers ListeConferencesEnAttente
-                    // activity.navigateToFragment(new ListeConferencesEnAttente());
                 }
             });
-            //Gestion du clic sur le bouton Annuler
-            buttonCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
 
-                    String message = "Vous avez annulé la validation !";
-                    Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
-                    toast.show();
-
-                    ConfListFragment ConfFragment = new ConfListFragment();
-                    navigateToFragment(ConfFragment);
-
-                    //Naviguer vers ListeConferencesEnAttente
-                    //activity.navigateToFragment(new ListeConferencesEnAttente());
-                }
-            });
 
         } else {
             butonValidate.setVisibility(View.INVISIBLE);
         }
-
+//Gestion du clic sur le bouton Annuler
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -169,8 +152,8 @@ public class Conference_A_Valider_Fragment extends Fragment {
                 Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
                 toast.show();
 
-                //Naviguer vers ListeConferencesEnAttente
-                //activity.navigateToFragment(new ListeConferencesEnAttente());
+                FragmentValidConference ConfFragment = new FragmentValidConference();
+                navigateToFragment(ConfFragment);
             }
         });
 
@@ -178,7 +161,7 @@ public class Conference_A_Valider_Fragment extends Fragment {
     }
 
 
-    private void navigateToFragment(ConfListFragment targetFragment) {
+    private void navigateToFragment(Fragment targetFragment) {
         getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, targetFragment)

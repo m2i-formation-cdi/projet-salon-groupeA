@@ -219,7 +219,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                 public void onClick(View v) {
                     //Récupération de l'utilisateur sur lequel on vient de cliquer
                     Conference selectedConference = confList.get(position);
-                    new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
+                   // new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
                     selectedConference.getAttendents().add(currentUser);
                     Toast.makeText(getContext(), selectedConference.getTitle() + "key =" + selectedConference.getRefKey(), Toast.LENGTH_SHORT).show();
                     //    Log.i("Action :", "Isncritpion");

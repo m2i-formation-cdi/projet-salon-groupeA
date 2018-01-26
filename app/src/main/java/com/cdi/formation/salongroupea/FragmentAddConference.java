@@ -36,6 +36,7 @@ public class FragmentAddConference extends Fragment {
     private Spinner spTheme;
     private TextView name;
     private Button btnValid;
+    private Button btnCancel;
     private int titi;
     private User currentUser = new User();
 
@@ -113,6 +114,7 @@ public class FragmentAddConference extends Fragment {
                 }
             }
         });
+
 
         return view;
     }

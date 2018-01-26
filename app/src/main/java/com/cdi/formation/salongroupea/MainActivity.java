@@ -156,6 +156,7 @@ public class MainActivity extends AppCompatActivity
             navigateToFragment(new FragmentInscription());
         } else if (id == R.id.actionLogout) {
         } else if (id == R.id.myConf) {
+            navigateToFragment(new ConfListFragment());
         } else if (id == R.id.createConf) {
             navigateToFragment(new FragmentAddConference());
 
