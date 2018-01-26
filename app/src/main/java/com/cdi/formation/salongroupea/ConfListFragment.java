@@ -50,7 +50,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
     private int color = 0;
 
     private Spinner spinner;
-    private String [] theme = {"Toutes","Java", "Android", "PHP"};
+    private String[] theme = {"Toutes", "Java", "Android", "PHP", "FARID"};
 
     //private User currentUser = new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
     public User currentUser = new User();
@@ -68,7 +68,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
         //Toast.makeText(this.getActivity(), "fbUser = "+ fbUser.toString() , Toast.LENGTH_SHORT).show();
 
         if (fbUser != null) {
-            Log.i("FIREBASE_USER","il existe un utilisateur FBUSER");
+            Log.i("FIREBASE_USER", "il existe un utilisateur FBUSER");
 
             //if() {
             //Hydratation de l'objet user
@@ -79,7 +79,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
             currentUser.setEmail(fbUser.getEmail());
             currentUser.setUserId(fbUser.getUid());
 
-            Log.i("CURRENT_USER","On cree le CURRENT_USER"+currentUser.getEmail());
+            Log.i("CURRENT_USER", "On cree le CURRENT_USER" + currentUser.getEmail());
 
             //Toast.makeText(this.getActivity(), this.currentUser.getEmail() , Toast.LENGTH_SHORT).show();
             //String userId = userReference.push().getKey();
@@ -97,6 +97,8 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //reinitialiser la list
                 confList.clear();
+                filteredList.clear();
+
                 //boucler sur lensemble des noeuds
                 for (DataSnapshot confSnap : dataSnapshot.getChildren()) {
                     String key = confSnap.getKey();
@@ -121,9 +123,8 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
         });
         Log.d("MAIN", " ------------------------ Fin de onCreate() -------------------------------");
 
-
         spinner = view.findViewById(R.id.spinnerTheme);
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item ,theme);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, theme);
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter1);
         spinner.setOnItemSelectedListener(this);
@@ -156,7 +157,6 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
 
             LinearLayout confItem = view.findViewById(R.id.confItem);
 
-
             //color++;
             //if (color % 2 == 1) {
             //    confItem.setBackgroundColor(0x0f0F0f);
@@ -167,7 +167,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
             if (currentConf.getDay() != null && currentConf.getComments() != null) {
                 for (Comments com : currentConf.getComments()) {
 
-                    Log.i("COM", "on a trouvé une note" + com.getRate() + "de la conf" + currentConf.getRefKey());
+                    Log.i("COM", "on a trouvé une note" + com.getRate() + "de la conf" + currentConf.title);
                     note = note + (float) Float.parseFloat(com.getRate());
 
                 }
@@ -192,9 +192,9 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                 Log.i("CURRENT_USER", "il existe un utilisateur AUTH, activation du bouton..." + currentUser.getName());
                 button.setEnabled(true);
                 notation.setEnabled(true);
-                Conference conferenceItem = confList.get(position);
+                Conference conferenceItem = filteredList.get(position);
                 //Boolean foundUser = false;
-                if (conferenceItem.attendents != null && conferenceItem.getComments() != null ) {
+                if (conferenceItem.attendents != null && conferenceItem.getComments() != null) {
                     //Verification que l'utilisateur authentifié est inscrit a la conf
                     for (User user1 : conferenceItem.attendents) {
                         if (user1.getUserId().equals(currentUser.getUserId())) {
@@ -211,14 +211,16 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                         }
                     }
                 }
-            }else       {  Log.i("CURRENT_USER","On a pas trouvé de CURRENT_USER");}
+            } else {
+                Log.i("CURRENT_USER", "On a pas trouvé de CURRENT_USER");
+            }
 
             //Log.i("USERID", firebaseDatabase.getReference("conference/" + conferenceItem.getRefKey() + "/attendents/"+currentUser.getUserId()).toString());
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //Récupération de l'utilisateur sur lequel on vient de cliquer
-                    Conference selectedConference = confList.get(position);
+                    Conference selectedConference = filteredList.get(position);
                    // new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
                     selectedConference.getAttendents().add(currentUser);
                     Toast.makeText(getContext(), selectedConference.getTitle() + "key =" + selectedConference.getRefKey(), Toast.LENGTH_SHORT).show();
@@ -235,7 +237,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                 @Override
                 public void onClick(View v) {
                     //map
-                    Conference selectedConference = confList.get(position);
+                    Conference selectedConference = filteredList.get(position);
                     //Création d'un intention pour l'affichage de la carte
                     Intent mapIntention = new Intent(getActivity(), MapsActivity.class);
                     //Passage des paramètres
@@ -256,7 +258,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                 public void onClick(View v) {
 
                     //map
-                    Conference selectedConference = confList.get(position);
+                    Conference selectedConference = filteredList.get(position);
                     //Création d'un intention pour l'affichage de la carte
 
                     Bundle bundle = new Bundle();
@@ -286,25 +288,28 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
         this.selectedIndex = position;
 
         String selection = theme[position];
-        if(! selection.equals("Toutes")){
+        if (!selection.equals("Toutes")) {
             filteredList.clear();
+            Log.i("FILTERED LIST", " ------------- RAZ de la CONFLIST --------------");
             for (int i = 0; i < confList.size(); i++) {
                 Conference conf = confList.get(i);
                 if (conf.getTheme().equalsIgnoreCase(selection)) {
                     filteredList.add(conf);
+                    Log.i("FILTERED LIST", " ------------- AJOUT de la CONF --------------");
+
                 }
             }
             adapter.notifyDataSetChanged();
-        }
-        else{
+        } else {
             filteredList.clear();
             for (int i = 0; i < confList.size(); i++) {
                 Conference conf = confList.get(i);
-                    filteredList.add(conf);
-                }
+                filteredList.add(conf);
             }
             adapter.notifyDataSetChanged();
         }
+
+    }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
