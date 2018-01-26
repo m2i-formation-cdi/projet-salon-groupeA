@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity
     private DatabaseReference userReference;
     private FirebaseDatabase firebaseDatabase;
     private Spinner spinner;
-
     private int toto = 5;
 
     //Gestion de la référence Conférence pour le formulaire validation conf en attente

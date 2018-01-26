@@ -37,6 +37,8 @@ public class NotationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        getActivity().setTitle("Noter la conférence");
+
         View view = inflater.inflate(R.layout.fragment_notation, container, false);
         rate = view.findViewById(R.id.ratingValue);
         comment = view.findViewById(R.id.editComment);

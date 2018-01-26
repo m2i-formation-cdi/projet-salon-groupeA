@@ -40,6 +40,7 @@ public class ConfValidationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getActivity().setTitle("Validation d'une conférence");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_conference_validation, container, false);
 

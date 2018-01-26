@@ -62,10 +62,13 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        getActivity().setTitle("Liste des conférences");
         //Récupération de l'utilisateur connecté
         FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
         //Affichage des infos utilisateur
         //Toast.makeText(this.getActivity(), "fbUser = "+ fbUser.toString() , Toast.LENGTH_SHORT).show();
+
 
         if (fbUser != null) {
             Log.i("FIREBASE_USER", "il existe un utilisateur FBUSER");

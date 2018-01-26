@@ -50,7 +50,7 @@ public class AddConfFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
+        getActivity().setTitle("Création conférence");
         //Récupération de l'utilisateur connecté
         FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
         //Affichage des infos utilisateur
