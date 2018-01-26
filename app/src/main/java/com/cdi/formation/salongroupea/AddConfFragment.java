@@ -25,7 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FragmentAddConference extends Fragment {
+public class AddConfFragment extends Fragment {
     // DrawerActivity parentActivity;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference ConfReference;
@@ -36,10 +36,11 @@ public class FragmentAddConference extends Fragment {
     private Spinner spTheme;
     private TextView name;
     private Button btnValid;
+    private Button btnCancel;
     private int titi;
     private User currentUser = new User();
 
-    public FragmentAddConference() {
+    public AddConfFragment() {
 
         // Required empty public constructor
     }
@@ -95,11 +96,8 @@ public class FragmentAddConference extends Fragment {
 
 
         name = (TextView) view.findViewById(R.id.tvName);
-
-
-        name.setText(currentUser.getName());
         // à remplaceer
-        // name = getActivity().currentUser.getName();
+        name.setText(currentUser.getName());
 
 
         // Création d'un listener sur le bouton de validation
@@ -110,9 +108,19 @@ public class FragmentAddConference extends Fragment {
                 //  si les saisies sont Ok, ajoute la conférence
                 if (isInputOk()) {
                     addConference();
+                    navigateToFragment(new ConfListFragment());
                 }
             }
         });
+
+        btnCancel = (Button) view.findViewById(R.id.btnCancel);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    navigateToFragment(new ConfListFragment());
+            }
+        });
+
 
         return view;
     }
@@ -129,6 +137,7 @@ public class FragmentAddConference extends Fragment {
         if (description.getText().toString().equals("")) {
             message = message + " Descriptif";
         }
+
         if (message.length() > 1) {
             Toast.makeText(getActivity(), "Zone(s) manquant(es) à renseigner :" + message + " !", Toast.LENGTH_LONG).show();
             ok = false;
@@ -147,7 +156,6 @@ public class FragmentAddConference extends Fragment {
             conference.setTheme(spTheme.getSelectedItem().toString());
             conference.setDescription(description.getText().toString());
 
-
             conference.setSpeaker(currentUser);
 
             // Chargement des données
@@ -162,12 +170,20 @@ public class FragmentAddConference extends Fragment {
             Toast.makeText(getActivity(), "Anomalie lors de l'enregistrement !" + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
+
     }
 
     public void initZones() {
         title.setText("");
         spTheme.setSelection(0);
         description.setText("");
+
+    }
+    private void navigateToFragment(Fragment targetFragment) {
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, targetFragment)
+                .commit();
     }
 
 }

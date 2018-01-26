@@ -25,7 +25,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -75,7 +74,7 @@ public class FragmentValidConference extends Fragment implements AdapterView.OnI
 
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_valid_conference, container, false);
+        View view = inflater.inflate(R.layout.fragment_conf_a_valider, container, false);
         lvConference = (ListView) view.findViewById(R.id.lvConference);
 
         // charger les données dans une liste
@@ -144,7 +143,7 @@ public class FragmentValidConference extends Fragment implements AdapterView.OnI
     /*private class ConfArrayAdapter extends ArrayAdapter<Conference> {
 
         public ConfArrayAdapter(@NonNull Context context) {
-            super(getActivity(), R.layout.sf_conf_a_valider, confList);
+            super(getActivity(), R.layout.conf_a_valider_item, confList);
         }
 
         @NonNull
@@ -154,7 +153,7 @@ public class FragmentValidConference extends Fragment implements AdapterView.OnI
             //    LayoutInflater inflater = this.context.getLayoutInflater();
             //    final View view = inflater.inflate(R.layout.details, parent, false);
 
-            View view = getActivity().getLayoutInflater().inflate(R.layout.sf_conf_a_valider, parent, false);
+            View view = getActivity().getLayoutInflater().inflate(R.layout.conf_a_valider_item, parent, false);
             Conference currentConf = confList.get(position);
 
             TextView titleConf = view.findViewById(R.id.edtTitle);
@@ -180,10 +179,11 @@ public class FragmentValidConference extends Fragment implements AdapterView.OnI
                     bundle.putString("Theme", selectedConference.getTheme());
                     bundle.putString("Description", selectedConference.getDescription());
                     bundle.putString("RefKey", selectedConference.getRefKey());
+                    bundle.putString("SpeakerName", selectedConference.getSpeaker().getName());
 
                     bundle.putString("SelectedUser", currentUser.getUserId());
 
-                    Conference_A_Valider_Fragment validationConf = new Conference_A_Valider_Fragment();
+                    ConfValidationFragment validationConf = new ConfValidationFragment();
                     validationConf.setArguments(bundle);
 
                     navigateToFragment(validationConf);
@@ -196,7 +196,7 @@ public class FragmentValidConference extends Fragment implements AdapterView.OnI
         }
     }*/
 
-    private void navigateToFragment(Conference_A_Valider_Fragment targetFragment) {
+    private void navigateToFragment(ConfValidationFragment targetFragment) {
         getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, targetFragment)

@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 
-public class FragmentInscription extends Fragment {
+public class InscriptionFragment extends Fragment {
 
     MainActivity parentActivity;
     EditText userNameEditText;

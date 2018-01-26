@@ -1,12 +1,9 @@
 package com.cdi.formation.salongroupea;
 
 import android.app.Fragment;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -15,14 +12,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cdi.formation.salongroupea.model.User;
 import com.firebase.ui.auth.AuthUI;
@@ -153,11 +147,12 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.actionLogin) {
-            navigateToFragment(new FragmentInscription());
+            navigateToFragment(new InscriptionFragment());
         } else if (id == R.id.actionLogout) {
         } else if (id == R.id.myConf) {
+            navigateToFragment(new ConfListFragment());
         } else if (id == R.id.createConf) {
-            navigateToFragment(new FragmentAddConference());
+            navigateToFragment(new AddConfFragment());
 
         } else if (id == R.id.validateConf) {
             navigateToFragment(new FragmentValidConference());
@@ -252,7 +247,7 @@ public class MainActivity extends AppCompatActivity
 
 
     public void launchValidation(String confId) {
-        navigateToFragment(new Conference_A_Valider_Fragment());
+        navigateToFragment(new ConfValidationFragment());
     }
 
     public void onLogout(MenuItem item) {

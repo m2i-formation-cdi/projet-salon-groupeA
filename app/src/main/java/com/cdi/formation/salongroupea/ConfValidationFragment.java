@@ -2,8 +2,6 @@ package com.cdi.formation.salongroupea;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,17 +18,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class Conference_A_Valider_Fragment extends Fragment {
+public class ConfValidationFragment extends Fragment {
 
     //Création des attributs
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference referenceBD;
     private TextView textViewTitleView;
     private TextView textViewThemeView;
-    private TextView textViewLocationView;
+    private EditText editViewLocationView;
     private TextView textViewTitleSpeakerNameView;
-    private TextView textViewFirstNameView;
     private TextView textViewDescriptionView;
+    private TextView textViewSpeaker;
     private int selectedIndex;
     private EditText editTextDay;
     private EditText editTextStartHour;
@@ -43,19 +41,19 @@ public class Conference_A_Valider_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_conference__a__valider_, container, false);
+        View view = inflater.inflate(R.layout.fragment_conference_validation, container, false);
 
         //Instanciation des Attributs
         textViewTitleView = (TextView) view.findViewById(R.id.textViewTitleView);
         textViewThemeView = (TextView) view.findViewById(R.id.textViewThemeView);
-        textViewLocationView = (TextView) view.findViewById(R.id.textViewLocationView);
+        editViewLocationView = (EditText) view.findViewById(R.id.editViewLocationView);
         textViewTitleSpeakerNameView = (TextView) view.findViewById(R.id.textViewTitleSpeakerNameView);
-        textViewFirstNameView = (TextView) view.findViewById(R.id.textViewFirstNameView);
         textViewDescriptionView = (TextView) view.findViewById(R.id.textViewDescriptionView);
         editTextDay = (EditText) view.findViewById(R.id.editTextDay);
         editTextStartHour = (EditText) view.findViewById(R.id.editTextStartHour);
         editTextLatitude = (EditText) view.findViewById(R.id.editTextLatitude);
         editTextLongitude = (EditText) view.findViewById(R.id.editTextLongitude);
+        textViewSpeaker = (TextView) view.findViewById(R.id.textViewTitleSpeakerNameView);
         conference = new Conference();
 
         //Connexion database
@@ -106,6 +104,7 @@ public class Conference_A_Valider_Fragment extends Fragment {
             String theme = b.get("Theme").toString();
             String description = b.get("Description").toString();
              refKey = b.get("RefKey").toString();
+            String speakerName = b.get("SpeakerName").toString();
             String selectedUser = b.get("SelectedUser").toString();
 
             Log.i("AFFICHAGE DU TITRE ", title + " et le Key : " + refKey);
@@ -114,8 +113,13 @@ public class Conference_A_Valider_Fragment extends Fragment {
             Log.i("AFFICHAGE DU THEME ", theme + " et le Key : " + refKey);
             textViewThemeView.setText(theme);
 
+            Log.i ("AFFIC SPEAKERNAME",speakerName + " et le Key : " + refKey);
+            textViewSpeaker.setText(speakerName);
+
             Log.i("AFFIC DE LA DESCR", description + " et le Key : " + refKey);
             textViewDescriptionView.setText(description);
+
+
 
             butonValidate.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -126,41 +130,26 @@ public class Conference_A_Valider_Fragment extends Fragment {
                     conference.setStartHour(editTextStartHour.getText().toString());
                     conference.setLatitude(editTextLatitude.getText().toString());
                     conference.setLongitude(editTextLongitude.getText().toString());
+                    conference.setLocation(editViewLocationView.getText().toString());
+
 
                     referenceBD.child(confId).setValue(conference);
 
                     String message = "La conférence a été validée !";
-                    Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
-                    toast.show();
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+
 
                     ConfListFragment ConfFragment = new ConfListFragment();
                     navigateToFragment(ConfFragment);
 
-                    //Naviguer vers ListeConferencesEnAttente
-                    // activity.navigateToFragment(new ListeConferencesEnAttente());
                 }
             });
-            //Gestion du clic sur le bouton Annuler
-            buttonCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
 
-                    String message = "Vous avez annulé la validation !";
-                    Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
-                    toast.show();
-
-                    ConfListFragment ConfFragment = new ConfListFragment();
-                    navigateToFragment(ConfFragment);
-
-                    //Naviguer vers ListeConferencesEnAttente
-                    //activity.navigateToFragment(new ListeConferencesEnAttente());
-                }
-            });
 
         } else {
             butonValidate.setVisibility(View.INVISIBLE);
         }
-
+//Gestion du clic sur le bouton Annuler
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -169,8 +158,8 @@ public class Conference_A_Valider_Fragment extends Fragment {
                 Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
                 toast.show();
 
-                //Naviguer vers ListeConferencesEnAttente
-                //activity.navigateToFragment(new ListeConferencesEnAttente());
+                FragmentValidConference ConfFragment = new FragmentValidConference();
+                navigateToFragment(ConfFragment);
             }
         });
 
@@ -178,7 +167,7 @@ public class Conference_A_Valider_Fragment extends Fragment {
     }
 
 
-    private void navigateToFragment(ConfListFragment targetFragment) {
+    private void navigateToFragment(Fragment targetFragment) {
         getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, targetFragment)
