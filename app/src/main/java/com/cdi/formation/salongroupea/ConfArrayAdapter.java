@@ -183,8 +183,37 @@ public class ConfArrayAdapter extends ArrayAdapter<Conference> {
             }
         });
 
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+
+        public void onClick(View v) {
+
+                //map
+                Conference selectedConference = list.get(position);
+                //Création d'un intention pour l'affichage de la carte
+
+                Bundle bundle = new Bundle();
+                bundle.putString("Title", selectedConference.getTitle());
+                bundle.putString("Theme", selectedConference.getTheme());
+                bundle.putString("Description", selectedConference.getDescription());
+                bundle.putString("RefKey", selectedConference.getRefKey());
+
+                bundle.putString("SelectedUser", currentUser.getUserId());
+
+                Conference_A_Valider_Fragment validationConf = new Conference_A_Valider_Fragment();
+                validationConf.setArguments(bundle);
+
+
+
+
+
+            }
+        });
+
         return view;
     }
 
 
+
 }
+

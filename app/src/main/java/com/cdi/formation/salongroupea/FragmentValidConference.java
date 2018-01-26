@@ -116,7 +116,7 @@ public class FragmentValidConference extends Fragment implements AdapterView.OnI
         lvConference.setOnItemClickListener(this);
 
         //creation de la vue qui liste les conférences
-        adapter = new ConfArrayAdapter(this.getActivity());
+        adapter = new ConfArrayAdapter(this.getActivity(), confList);
         lvConference.setAdapter(adapter);
 
         // aiguillage vers la validation avec les informations nécessaires : id conference
@@ -141,7 +141,7 @@ public class FragmentValidConference extends Fragment implements AdapterView.OnI
 
     }
 
-    private class ConfArrayAdapter extends ArrayAdapter<Conference> {
+    /*private class ConfArrayAdapter extends ArrayAdapter<Conference> {
 
         public ConfArrayAdapter(@NonNull Context context) {
             super(getActivity(), R.layout.sf_conf_a_valider, confList);
@@ -194,7 +194,7 @@ public class FragmentValidConference extends Fragment implements AdapterView.OnI
 
             return view;
         }
-    }
+    }*/
 
     private void navigateToFragment(Conference_A_Valider_Fragment targetFragment) {
         getFragmentManager()
