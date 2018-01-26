@@ -138,6 +138,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
         int resource;
         List<Conference> data;
 
+
         public ConfArrayAdapter(@NonNull Context context, int resource) {
             super(getActivity(), R.layout.conf_list_item, filteredList);
         }
