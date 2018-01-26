@@ -173,6 +173,7 @@ public class AddConfFragment extends Fragment {
 
     }
 
+
     public void initZones() {
         title.setText("");
         spTheme.setSelection(0);
