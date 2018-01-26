@@ -180,6 +180,7 @@ public class FragmentValidConference extends Fragment implements AdapterView.OnI
                     bundle.putString("Theme", selectedConference.getTheme());
                     bundle.putString("Description", selectedConference.getDescription());
                     bundle.putString("RefKey", selectedConference.getRefKey());
+                    bundle.putString("SpeakerName", selectedConference.getSpeaker().getName());
 
                     bundle.putString("SelectedUser", currentUser.getUserId());
 

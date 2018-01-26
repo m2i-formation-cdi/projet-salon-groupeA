@@ -29,8 +29,8 @@ public class Conference_A_Valider_Fragment extends Fragment {
     private TextView textViewThemeView;
     private TextView textViewLocationView;
     private TextView textViewTitleSpeakerNameView;
-    private TextView textViewFirstNameView;
     private TextView textViewDescriptionView;
+    private TextView textViewSpeaker;
     private int selectedIndex;
     private EditText editTextDay;
     private EditText editTextStartHour;
@@ -50,12 +50,12 @@ public class Conference_A_Valider_Fragment extends Fragment {
         textViewThemeView = (TextView) view.findViewById(R.id.textViewThemeView);
         textViewLocationView = (TextView) view.findViewById(R.id.textViewLocationView);
         textViewTitleSpeakerNameView = (TextView) view.findViewById(R.id.textViewTitleSpeakerNameView);
-        textViewFirstNameView = (TextView) view.findViewById(R.id.textViewFirstNameView);
         textViewDescriptionView = (TextView) view.findViewById(R.id.textViewDescriptionView);
         editTextDay = (EditText) view.findViewById(R.id.editTextDay);
         editTextStartHour = (EditText) view.findViewById(R.id.editTextStartHour);
         editTextLatitude = (EditText) view.findViewById(R.id.editTextLatitude);
         editTextLongitude = (EditText) view.findViewById(R.id.editTextLongitude);
+        textViewSpeaker = (TextView) view.findViewById(R.id.textViewTitleSpeakerNameView);
         conference = new Conference();
 
         //Connexion database
@@ -106,6 +106,7 @@ public class Conference_A_Valider_Fragment extends Fragment {
             String theme = b.get("Theme").toString();
             String description = b.get("Description").toString();
              refKey = b.get("RefKey").toString();
+            String speakerName = b.get("SpeakerName").toString();
             String selectedUser = b.get("SelectedUser").toString();
 
             Log.i("AFFICHAGE DU TITRE ", title + " et le Key : " + refKey);
@@ -114,8 +115,13 @@ public class Conference_A_Valider_Fragment extends Fragment {
             Log.i("AFFICHAGE DU THEME ", theme + " et le Key : " + refKey);
             textViewThemeView.setText(theme);
 
+            Log.i ("AFFIC SPEAKERNAME",speakerName + " et le Key : " + refKey);
+            textViewSpeaker.setText(speakerName);
+
             Log.i("AFFIC DE LA DESCR", description + " et le Key : " + refKey);
             textViewDescriptionView.setText(description);
+
+
 
             butonValidate.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -126,6 +132,7 @@ public class Conference_A_Valider_Fragment extends Fragment {
                     conference.setStartHour(editTextStartHour.getText().toString());
                     conference.setLatitude(editTextLatitude.getText().toString());
                     conference.setLongitude(editTextLongitude.getText().toString());
+
 
                     referenceBD.child(confId).setValue(conference);
 

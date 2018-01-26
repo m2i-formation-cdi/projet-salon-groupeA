@@ -36,7 +36,6 @@ public class FragmentAddConference extends Fragment {
     private Spinner spTheme;
     private TextView name;
     private Button btnValid;
-    private Button btnCancel;
     private int titi;
     private User currentUser = new User();
 
@@ -96,9 +95,6 @@ public class FragmentAddConference extends Fragment {
 
 
         name = (TextView) view.findViewById(R.id.tvName);
-
-
-        name.setText(currentUser.getName());
         // à remplaceer
         // name = getActivity().currentUser.getName();
 
@@ -131,6 +127,7 @@ public class FragmentAddConference extends Fragment {
         if (description.getText().toString().equals("")) {
             message = message + " Descriptif";
         }
+
         if (message.length() > 1) {
             Toast.makeText(getActivity(), "Zone(s) manquant(es) à renseigner :" + message + " !", Toast.LENGTH_LONG).show();
             ok = false;
@@ -148,7 +145,6 @@ public class FragmentAddConference extends Fragment {
             conference.setTitle(title.getText().toString());
             conference.setTheme(spTheme.getSelectedItem().toString());
             conference.setDescription(description.getText().toString());
-
 
             conference.setSpeaker(currentUser);
 
