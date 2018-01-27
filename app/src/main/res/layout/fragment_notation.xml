@@ -46,12 +46,12 @@
             android:id="@+id/addComment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="Valider la note" />
 
         <Button
             android:id="@+id/cancelComment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="Annuler" />
     </LinearLayout>
 </FrameLayout>
