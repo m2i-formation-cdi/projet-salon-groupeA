@@ -2,6 +2,8 @@ package com.cdi.formation.salongroupea;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cdi.formation.salongroupea.model.Comments;
 import com.cdi.formation.salongroupea.model.Conference;
@@ -27,11 +31,14 @@ public class NotationFragment extends Fragment {
     private DatabaseReference confReference;
     private RatingBar rate;
     private EditText comment;
+    private TextView title;
+    private TextView speaker;
     private Conference conf = new Conference();
 
     public NotationFragment() {
         // Required empty public constructor
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,15 +46,24 @@ public class NotationFragment extends Fragment {
 
         getActivity().setTitle("Noter la conférence");
 
-        View view = inflater.inflate(R.layout.fragment_notation, container, false);
+        final View view = inflater.inflate(R.layout.fragment_notation, container, false);
         rate = view.findViewById(R.id.ratingValue);
         comment = view.findViewById(R.id.editComment);
+        title = view.findViewById(R.id.confTitle);
+        speaker = view.findViewById(R.id.confSpeaker);
 
         Button button = view.findViewById(R.id.addComment);
 
         Bundle b = getArguments();
         String confKey = b.get("ConfKey").toString();
         String selectedUser = b.get("SelectedUser").toString();
+        String confTitle = b.get("ConfTitle").toString();
+        String confSpeaker = b.get("Speaker").toString();
+
+        title.setText(confTitle);
+        speaker.setText(confSpeaker);
+
+
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseDatabase.getReference().child("conference").child(confKey).addListenerForSingleValueEvent(
@@ -55,6 +71,7 @@ public class NotationFragment extends Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         conf = dataSnapshot.getValue(Conference.class);
+
                     }
 
                     @Override
@@ -64,10 +81,13 @@ public class NotationFragment extends Fragment {
                 }
         );
 
+
+
         //Ajouter une note et un commentaire appel du fragment NotationFragment
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
 
                 Float rateVal = rate.getRating();
                 String commentVal = comment.getText().toString();
@@ -77,6 +97,7 @@ public class NotationFragment extends Fragment {
                 Bundle b = getArguments();
                 String confKey = b.get("ConfKey").toString();
                 String selectedUser = b.get("SelectedUser").toString();
+
 
                 com.setAuthorId(selectedUser);
                 com.setMessage(commentVal);
@@ -121,6 +142,7 @@ public class NotationFragment extends Fragment {
         // Inflate the layout for this fragment
         return view;
     }
+
 
     private void navigateToFragment(ConfListFragment targetFragment) {
         getFragmentManager()

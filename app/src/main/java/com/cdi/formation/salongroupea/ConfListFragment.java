@@ -299,6 +299,8 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                     Bundle bundle = new Bundle();
                     bundle.putString("ConfKey", selectedConference.getRefKey());
                     bundle.putString("SelectedUser", currentUser.getUserId());
+                    bundle.putString("ConfTitle", selectedConference.getTitle());
+                    bundle.putString("Speaker", selectedConference.getSpeaker().getFirstName() + " "+ selectedConference.getSpeaker().getName() );
 
                     NotationFragment notation = new NotationFragment();
                     notation.setArguments(bundle);
@@ -354,9 +356,17 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
             for (int i = 0; i < confList.size(); i++) {
                 Conference conf = confList.get(i);
                 if (conf.getAttendents() != null) {
-                    if (conf.getAttendents().contains(currentUser.getEmail())) ;
-                    filteredList.add(conf);
-                    Log.i("FILTERED LIST", " ------------- AJOUT de la CONF --------------");
+                    for(User user2 : conf.getAttendents()){
+                        if (user2.getUserId().equals(currentUser.getUserId())){ ;
+                        Log.i("TEST ", " ------------- "+ user2.getUserId() +" = "+ currentUser.getUserId() +"--------------");
+
+                        filteredList.add(conf);
+                        Log.i("FILTERED LIST", " ------------- AJOUT de la CONF : "+ conf.getTitle() +"--------------");
+
+                        break;}
+
+                    }
+
 
                 }
             }
