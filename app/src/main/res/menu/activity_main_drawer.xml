@@ -17,17 +17,17 @@
             android:visible="false"/>
         <item
             android:id="@+id/myConf"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_playlist_play_black_24dp"
             android:title="Liste des conferences" />
 
         <item
             android:id="@+id/createConf"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_playlist_add_black_24dp"
             android:title="Creer une conférence" />
 
         <item
             android:id="@+id/validateConf"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_playlist_add_check_black_24dp"
             android:title="Valider les conférences"
             android:visible="false"/>
     </group>
