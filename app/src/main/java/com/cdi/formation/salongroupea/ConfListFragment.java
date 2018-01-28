@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cdi.formation.salongroupea.model.Comments;
 import com.cdi.formation.salongroupea.model.Conference;
@@ -45,13 +46,15 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
     private List<Conference> filteredList = new ArrayList<>();
     private int selectedIndex;
     private ListView confListView;
+    private TextView noResults;
+    private Spinner spinnerTheme;
+
     private ConfArrayAdapter adapter;
     private int color = 0;
 
     private Spinner spinner;
-    private String[] theme = {"Toutes", "Mes Conférences", "Java", "Android", "PHP"};
+    private String[] theme = {"Toutes", "Mes Conférences", "Java", "Android", "PHP", "KOTLIN"};
 
-    //private User currentUser = new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
     public User currentUser = new User();
 
     public ConfListFragment() {
@@ -61,14 +64,19 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i("CONF LIST FRAGMENT", " ------------- Methode OnCreateView --------------");
+
 
         getActivity().setTitle("Liste des conférences");
         //Récupération de l'utilisateur connecté
-        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+        MainActivity mainActivity = new MainActivity();
+        currentUser = mainActivity.getCurrentUser();
+        //Log.i("VOILA LE CURRENT USER", "+++++++++++++++++++++" + currentUser.getName() + "+++++++++++++++++++++++++++++++++++");
+  /*       FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
         //Affichage des infos utilisateur
         //Toast.makeText(this.getActivity(), "fbUser = "+ fbUser.toString() , Toast.LENGTH_SHORT).show();
 
-        if (fbUser != null) {
+       if (fbUser != null) {
             Log.i("FIREBASE_USER", "il existe un utilisateur FBUSER");
 
             //if() {
@@ -84,18 +92,21 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
 
             //Toast.makeText(this.getActivity(), this.currentUser.getEmail() , Toast.LENGTH_SHORT).show();
             //String userId = userReference.push().getKey();
-        }
+        }*/
         firebaseDatabase = FirebaseDatabase.getInstance();
         confReference = firebaseDatabase.getReference().child("conference");
-        View view = inflater.inflate(R.layout.fragment_conf_list, container, false);
+        final View view = inflater.inflate(R.layout.fragment_conf_list, container, false);
         confListView = view.findViewById(R.id.confListView);
-        //creation de la vue qui liste les livres
+        //creation de la vue qui liste les conferences
         adapter = new ConfArrayAdapter(this.getActivity(), R.layout.conf_list_item);
         confListView.setAdapter(adapter);
         //recuperation des données avec abonnement au modif ulterieurs
         confReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.i("CONF LIST FRAGMENT", " ------------- Methode onDataChange FIREBASE --------------");
+
+
                 //reinitialiser la list
                 confList.clear();
                 filteredList.clear();
@@ -113,7 +124,30 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                         filteredList.add(conf);
                     }
                 }
-                Log.d(" MAIN", "------------------- Fin de recuperation des données -----------------------");
+                Log.d(" MAIN 1", "------------------- Fin de recuperation des données -----------------------");
+
+                //On recupere le theme preselectionné
+                spinnerTheme = view.findViewById(R.id.spinnerTheme);
+                String preselectedTheme = theme[spinnerTheme.getSelectedItemPosition()];
+
+                //on filtre la liste avec le filtre deja preselectionné
+                filterConfList(preselectedTheme, view);
+
+                //On test si la liste est vide pour afficher le message "aucns resultats"
+                Log.i(" TEST 1", " ------------- on test si La liste est vide --------------");
+
+                if (filteredList.size() != 0) {
+                    Log.i(" FILTERED LIST 1", " ------------- La liste n'est pas vide --------------");
+
+                    noResults = view.findViewById(R.id.noResults);
+                    noResults.setVisibility(View.GONE);
+
+                } else {
+                    Log.i(" FILTERED LIST 1", " ------------- La liste est vide --------------");
+                    noResults = view.findViewById(R.id.noResults);
+                    noResults.setVisibility(View.VISIBLE);
+                }
+
                 adapter.notifyDataSetChanged();
             }
 
@@ -122,13 +156,15 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                 Log.d(" ERRORRRRRRRR", "------------------- erreur de database -----------------------");
             }
         });
-        Log.d("MAIN", " ------------------------ Fin de onCreate() -------------------------------");
 
         spinner = view.findViewById(R.id.spinnerTheme);
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, theme);
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter1);
         spinner.setOnItemSelectedListener(this);
+
+        Log.d("CONF LIST FRAGMENT", " ------------------------ Fin de onCreate() -------------------------------");
+
 
         return view;
     }
@@ -140,62 +176,46 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
         List<Conference> data;
 
         public ConfArrayAdapter(@NonNull Context context, int resource) {
+
             super(getActivity(), R.layout.conf_list_item, filteredList);
+            Log.i("CONF LIST FRAGMENT", " ------------- Methode ConfArrayAdapter --------------");
+
         }
 
         @NonNull
         @Override
         public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
+
             View view = getActivity().getLayoutInflater().inflate(R.layout.conf_list_item, parent, false);
             final Conference currentConf = filteredList.get(position);
             TextView textView = view.findViewById(R.id.confListText);
+            TextView description = view.findViewById(R.id.confDescription);
             TextView nbCom = view.findViewById(R.id.numberComments);
 
-            // on calcul la note moyenne de la conference
-            RatingBar rateConf = view.findViewById(R.id.ratingConf);
-            float note = (float) 0.0;
 
-            LinearLayout confItem = view.findViewById(R.id.confItem);
+            getConfRating(view, currentConf, nbCom);
 
-            //color++;
-            //if (color % 2 == 1) {
-            //    confItem.setBackgroundColor(0x0f0F0f);
-            //} else {
-            //    confItem.setBackgroundColor(0x05F505);
-            //}
-//
-            if (currentConf.getDay() != null && currentConf.getComments() != null) {
-                for (Comments com : currentConf.getComments()) {
-
-                    Log.i("COM", "on a trouvé une note" + com.getRate() + "de la conf" + currentConf.title);
-                    note = note + (float) Float.parseFloat(com.getRate());
-
-                }
-                float noteMoy = note / currentConf.getComments().size();
-                Log.i("NOTE MOYENNE", String.valueOf(noteMoy));
-                rateConf.setRating(noteMoy);
-
-                nbCom.setText(String.valueOf(currentConf.getComments().size()));
-
-            }
 
             textView.setText(currentConf.getTitle());
+            description.setText(currentConf.getDescription());
 
             //recuperation des boutons
             final Button button = view.findViewById(R.id.buttonRegister);
             Button notation = view.findViewById(R.id.buttonRating);
+            TextView com = view.findViewById(R.id.numberComments);
+
             ImageView image = view.findViewById(R.id.getMap);
-
-            //Toast.makeText(getActivity(), currentUser.getEmail() , Toast.LENGTH_SHORT).show();
-
-            if (currentUser.getUserId() != null) {
+            MainActivity mainActivity = new MainActivity();
+            //  Toast.makeText(getActivity(), currentUser.getUserId() , Toast.LENGTH_SHORT).show();
+            currentUser = mainActivity.getCurrentUser();
+            if (currentUser.getName() != null) {
                 Log.i("CURRENT_USER", "il existe un utilisateur AUTH, activation du bouton..." + currentUser.getName());
                 button.setEnabled(true);
                 notation.setEnabled(true);
                 Conference conferenceItem = filteredList.get(position);
                 //Boolean foundUser = false;
-                Log.i("CURENNT USER", currentUser.getName());
+                Log.i("CURRENT USER", currentUser.getName());
                 if (conferenceItem.attendents != null) {
                     //Verification que l'utilisateur authentifié est inscrit a la conf
                     for (User user1 : conferenceItem.attendents) {
@@ -219,128 +239,189 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                 Log.i("CURRENT_USER", "On a pas trouvé de CURRENT_USER");
             }
 
-            //Log.i("USERID", firebaseDatabase.getReference("conference/" + conferenceItem.getRefKey() + "/attendents/"+currentUser.getUserId()).toString());
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            //Methode insciption et desincsription
+            addConfInscription(position, button);
 
-                    if (button.getText().equals("Se désinscrire")) {
+            //Methode geolocalisation
+            getConfLocation(position, image);
 
-                        //Récupération de l'utilisateur sur lequel on vient de cliquer
-                        Conference selectedConference = filteredList.get(position);
-                        Integer i = 0;
-                        for (User att : selectedConference.getAttendents()) {
+            //Methode ajout d'un note
+            addConfRating(position, notation);
 
-                            if (att.getUserId().equals(currentUser.getUserId())) {
-
-                                break;
-                            }
-                            i++;
-                        }
-                        selectedConference.getAttendents().remove(0);
+            //Methode qui affiche les commentaires
+            getConfComments(position ,view, com);
 
 
-                        //Toast.makeText(getContext(), "Suppression : " + selectedConference.getTitle() + "key =" + selectedConference.getRefKey(), Toast.LENGTH_SHORT).show();
+            Log.i(" TEST 1", " ------------- on test si La liste est vide --------------");
 
+            if (filteredList.size() != 0) {
+                Log.i(" FILTERED LIST 1", " ------------- La liste n'est pas vide --------------");
 
-                        firebaseDatabase.getReference().child("conference").child(selectedConference.getRefKey()).setValue(selectedConference);
-                       // Log.i("SELECTED CONF", selectedConference.getAttendents().get(i).getName());
+                noResults = ConfListFragment.this.getView().findViewById(R.id.noResults);
+                noResults.setVisibility(View.GONE);
 
-                    } else {
-
-                        //Récupération de l'utilisateur sur lequel on vient de cliquer
-                        Conference selectedConference = filteredList.get(position);
-                        // new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
-                        //Log.i("SELECTED CONF", selectedConference.getAttendents().toString());
-
-                        if (selectedConference.getAttendents() == null) {
-                            List<User> listAtt = new ArrayList<User>();
-                            listAtt.add(currentUser);
-                            selectedConference.setAttendents(listAtt);
-                        } else {
-                            selectedConference.getAttendents().add(currentUser);
-                        }
-                        //selectedConference.getAttendents().add(currentUser);
-
-                        //Toast.makeText(getContext(), selectedConference.getTitle() + "key =" + selectedConference.getRefKey(), Toast.LENGTH_SHORT).show();
-
-                        firebaseDatabase.getReference().child("conference").child(selectedConference.getRefKey()).setValue(selectedConference);
-                    }
-                }
-            });
-            image.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //map
-                    Conference selectedConference = filteredList.get(position);
-                    //Création d'un intention pour l'affichage de la carte
-                    Intent mapIntention = new Intent(getActivity(), MapsActivity.class);
-                    //Passage des paramètres
-                    mapIntention.putExtra("latitude", Double.valueOf(selectedConference.getLatitude()));
-                    mapIntention.putExtra("longitude", Double.valueOf(selectedConference.getLongitude()));
-                    mapIntention.putExtra("title", selectedConference.getTitle());
-                    mapIntention.putExtra("theme", selectedConference.getTheme());
-                    mapIntention.putExtra("day", selectedConference.getDay());
-                    mapIntention.putExtra("startHour", selectedConference.getStartHour());
-                    //Affichage de l'activité
-                    startActivity(mapIntention);
-                }
-            });
-
-            //Ajouter une note et un commentaire appel du fragment NotationFragment
-            notation.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    //map
-                    Conference selectedConference = filteredList.get(position);
-                    //Création d'un intention pour l'affichage de la carte
-
-                    Bundle bundle = new Bundle();
-                    bundle.putString("ConfKey", selectedConference.getRefKey());
-                    bundle.putString("SelectedUser", currentUser.getUserId());
-                    bundle.putString("ConfTitle", selectedConference.getTitle());
-                    bundle.putString("Speaker", selectedConference.getSpeaker().getFirstName() + " "+ selectedConference.getSpeaker().getName() );
-
-                    NotationFragment notation = new NotationFragment();
-                    notation.setArguments(bundle);
-
-                    navigateToFragment(notation);
-
-                }
-            });
-
-            TextView com = view.findViewById(R.id.numberComments);
-
-            //   //Ajouter une note et un commentaire appel du fragment NotationFragment
-            //   com.setOnClickListener(new View.OnClickListener() {
-            //       @Override
-            //       public void onClick(View v) {
-
-            //           //map
-            //           Conference selectedConference = filteredList.get(position);
-            //           //Création d'un intention pour l'affichage de la carte
-
-            //           Bundle bundle = new Bundle();
-            //           bundle.putString("ConfKey", selectedConference.getComments());
-            //           bundle.putStringArrayList("Comments", selectedConference.getComments(). );
-            //           bundle.
-            //           bundle.putString("SelectedUser", currentUser.getUserId());
-
-            //           NotationFragment notation = new NotationFragment();
-            //           notation.setArguments(bundle);
-
-            //           navigateToFragment(notation);
-
-            //       }
-            //   });
+            } else {
+                Log.i(" FILTERED LIST 1", " ------------- La liste est vide --------------");
+                noResults = ConfListFragment.this.getView().findViewById(R.id.noResults);
+                noResults.setVisibility(View.VISIBLE);
+            }
 
             return view;
         }
     }
 
+    private void getConfComments(final int position, View view, final TextView com) {
+
+        //Ajouter une note et un commentaire appel du fragment NotationFragment
+        com.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //map
+                MainActivity mainActivity = new MainActivity();
+                mainActivity.setSelectedConference(filteredList.get(position));
+
+
+                CommentFragment commentsList = new CommentFragment();
+
+                navigateToFragment( commentsList );
+
+            }
+        });
+    }
+
+    private void addConfInscription(final int position, final Button button) {
+        //Log.i("USERID", firebaseDatabase.getReference("conference/" + conferenceItem.getRefKey() + "/attendents/"+currentUser.getUserId()).toString());
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (button.getText().equals("Se désinscrire")) {
+
+                    //Récupération de l'utilisateur sur lequel on vient de cliquer
+                    Conference selectedConference = filteredList.get(position);
+                    Integer i = 0;
+                    for (User att : selectedConference.getAttendents()) {
+
+                        if (att.getUserId().equals(currentUser.getUserId())) {
+
+                            break;
+                        }
+                        i++;
+                    }
+                    selectedConference.getAttendents().remove(0);
+
+
+                    //Toast.makeText(getContext(), "Suppression : " + selectedConference.getTitle() + "key =" + selectedConference.getRefKey(), Toast.LENGTH_SHORT).show();
+
+
+                    firebaseDatabase.getReference().child("conference").child(selectedConference.getRefKey()).setValue(selectedConference);
+                    // Log.i("SELECTED CONF", selectedConference.getAttendents().get(i).getName());
+
+                } else {
+
+                    //Récupération de l'utilisateur sur lequel on vient de cliquer
+                    Conference selectedConference = filteredList.get(position);
+                    // new User("tanghe", "vianney", "monmail@mail.com", "145789", false);
+                    //Log.i("SELECTED CONF", selectedConference.getAttendents().toString());
+
+                    if (selectedConference.getAttendents() == null) {
+                        List<User> listAtt = new ArrayList<User>();
+                        listAtt.add(currentUser);
+                        selectedConference.setAttendents(listAtt);
+                    } else {
+                        selectedConference.getAttendents().add(currentUser);
+                    }
+                    //selectedConference.getAttendents().add(currentUser);
+
+                    //Toast.makeText(getContext(), selectedConference.getTitle() + "key =" + selectedConference.getRefKey(), Toast.LENGTH_SHORT).show();
+
+                    firebaseDatabase.getReference().child("conference").child(selectedConference.getRefKey()).setValue(selectedConference);
+                }
+            }
+        });
+    }
+
+    private void getConfLocation(final int position, ImageView image) {
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //map
+                Conference selectedConference = filteredList.get(position);
+                //Création d'un intention pour l'affichage de la carte
+                Intent mapIntention = new Intent(getActivity(), MapsActivity.class);
+                //Passage des paramètres
+                mapIntention.putExtra("latitude", Double.valueOf(selectedConference.getLatitude()));
+                mapIntention.putExtra("longitude", Double.valueOf(selectedConference.getLongitude()));
+                mapIntention.putExtra("title", selectedConference.getTitle());
+                mapIntention.putExtra("theme", selectedConference.getTheme());
+                mapIntention.putExtra("day", selectedConference.getDay());
+                mapIntention.putExtra("startHour", selectedConference.getStartHour());
+                //Affichage de l'activité
+                startActivity(mapIntention);
+            }
+        });
+    }
+
+    private void addConfRating(final int position, Button notation) {
+        //Ajouter une note et un commentaire appel du fragment NotationFragment
+        notation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //map
+                Conference selectedConference = filteredList.get(position);
+                //Création d'un intention pour l'affichage de la carte
+
+                Bundle bundle = new Bundle();
+                bundle.putString("ConfKey", selectedConference.getRefKey());
+                bundle.putString("SelectedUser", currentUser.getUserId());
+                bundle.putString("ConfTitle", selectedConference.getTitle());
+                bundle.putString("Speaker", selectedConference.getSpeaker().getFirstName() + " " + selectedConference.getSpeaker().getName());
+
+                NotationFragment notation = new NotationFragment();
+                notation.setArguments(bundle);
+
+                navigateToFragment(notation);
+
+            }
+        });
+    }
+
+    private void getConfRating(View view, Conference currentConf, TextView nbCom) {
+        // on calcul la note moyenne de la conference
+        RatingBar rateConf = view.findViewById(R.id.ratingConf);
+        float note = (float) 0.0;
+
+        //LinearLayout confItem = view.findViewById(R.id.confItem);
+
+        //color++;
+        //if (color % 2 == 1) {
+        //    confItem.setBackgroundColor(0x0f0F0f);
+        //} else {
+        //    confItem.setBackgroundColor(0x05F505);
+        //}
+//
+        if (currentConf.getDay() != null && currentConf.getComments() != null) {
+            for (Comments com : currentConf.getComments()) {
+
+                Log.i("COM", "on a trouvé une note" + com.getRate() + "de la conf" + currentConf.title);
+                note = note + (float) Float.parseFloat(com.getRate());
+
+            }
+            float noteMoy = note / currentConf.getComments().size();
+            Log.i("NOTE MOYENNE", String.valueOf(noteMoy));
+            rateConf.setRating(noteMoy);
+
+            nbCom.setText(String.valueOf(currentConf.getComments().size()));
+
+        }
+    }
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.i("CONF LIST FRAGMENT", " ------------- Methode OnItemClick --------------");
+
         this.selectedIndex = position;
         adapter.notifyDataSetChanged();
     }
@@ -348,22 +429,30 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         this.selectedIndex = position;
+        Log.i("CONF LIST FRAGMENT", " ------------- Methode OnItemSelected --------------");
 
-        String selection = theme[position];
+        filterConfList(theme[position], getView());
+
+    }
+
+    private void filterConfList(String s, View view) {
+        String selection = s;
         if (selection.equals("Mes Conférences")) {
             filteredList.clear();
-            Log.i("FILTERED LIST", " ------------- RAZ de la CONFLIST --------------");
+            Log.i("FILTERED LIST 2", " ------------- RAZ de la CONFLIST --------------");
             for (int i = 0; i < confList.size(); i++) {
                 Conference conf = confList.get(i);
                 if (conf.getAttendents() != null) {
-                    for(User user2 : conf.getAttendents()){
-                        if (user2.getUserId().equals(currentUser.getUserId())){ ;
-                        Log.i("TEST ", " ------------- "+ user2.getUserId() +" = "+ currentUser.getUserId() +"--------------");
+                    for (User user2 : conf.getAttendents()) {
+                        if (user2.getUserId().equals(currentUser.getUserId())) {
+                            ;
+                            Log.i("TEST 2", " ------------- " + user2.getUserId() + " = " + currentUser.getUserId() + "--------------");
 
-                        filteredList.add(conf);
-                        Log.i("FILTERED LIST", " ------------- AJOUT de la CONF : "+ conf.getTitle() +"--------------");
+                            filteredList.add(conf);
+                            Log.i("FILTERED LIST 2", " ------------- AJOUT de la CONF : " + conf.getTitle() + "--------------");
 
-                        break;}
+                            break;
+                        }
 
                     }
 
@@ -385,15 +474,35 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                 }
             }
             adapter.notifyDataSetChanged();
+
+
         }
+
+
+        Log.i(" TEST 2", " ------------- on test si La liste est vide --------------");
+
+        if (filteredList.size() == 0) {
+            Log.i(" FILTERED LIST 2", " ------------- La liste est vide --------------");
+
+            noResults = view.findViewById(R.id.noResults);
+            noResults.setVisibility(View.VISIBLE);
+
+        } else {
+            Log.i(" FILTERED LIST 2", " ------------- La liste n'est pas vide --------------");
+            noResults = view.findViewById(R.id.noResults);
+            noResults.setVisibility(View.GONE);
+        }
+
         adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+
+
     }
 
-    private void navigateToFragment(NotationFragment targetFragment) {
+    private void navigateToFragment(Fragment targetFragment) {
         getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, targetFragment)

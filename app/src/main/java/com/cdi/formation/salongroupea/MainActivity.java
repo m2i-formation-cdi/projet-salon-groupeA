@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.TextView;
 
+import com.cdi.formation.salongroupea.model.Conference;
 import com.cdi.formation.salongroupea.model.User;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -41,7 +42,10 @@ public class MainActivity extends AppCompatActivity
     private FirebaseUser fbUser;
     private TextView userNameTextView;
     private TextView userEmailTextView;
-    private User currentUser;
+
+
+    private static User currentUser;
+    private static Conference selectedConference;
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private DatabaseReference userReference;
@@ -52,8 +56,26 @@ public class MainActivity extends AppCompatActivity
     //Gestion de la référence Conférence pour le formulaire validation conf en attente
 
 
+    public static Conference getSelectedConference() {
+        return selectedConference;
+    }
+
+    public static void setSelectedConference(Conference selectedConference) {
+        MainActivity.selectedConference = selectedConference;
+    }
+
+    public static User getCurrentUser() {
+        return currentUser;
+    }
+
+    public static void setCurrentUser(User currentUser) {
+        MainActivity.currentUser = currentUser;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("MAIN ACTIVITY", " ------------- Methode OnCreate --------------");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -78,20 +100,28 @@ public class MainActivity extends AppCompatActivity
         View headerView = ((NavigationView) navigationView.findViewById(R.id.nav_view)).getHeaderView(0);
         userEmailTextView = headerView.findViewById(R.id.headerUserEmail);
         userNameTextView = headerView.findViewById(R.id.headerUserName);
+
+
         FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        Fragment ConfFragment = new ConfListFragment();
-        navigateToFragment(ConfFragment);
 
         if (fbUser != null) {
             userNameTextView.setText((fbUser.getDisplayName()));
             userEmailTextView.setText((fbUser.getEmail()));
+            userReference.child(fbUser.getUid()).addListenerForSingleValueEvent( new ValueEventListener() {
 
-            userReference.child(fbUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.i("MAIN ACTIVITY", " ------------- Methode onDataChange FIREBASE --------------");
+
                     if (dataSnapshot.exists()) {
-                        currentUser = dataSnapshot.getValue(User.class);
+                        setCurrentUser(dataSnapshot.getValue(User.class));
+
+                        Log.i("USER NAME", "--------------------------------------" + getCurrentUser().getName());
+                        Log.i("USER FIRSTNAME", "--------------------------------------" + getCurrentUser().getFirstName());
+                        Log.i("USER EMAIL", "--------------------------------------" + getCurrentUser().getEmail());
+                        Log.i("USER ID", "--------------------------------------" + getCurrentUser().getUserId());
+
                         if (currentUser.getIsAdmin() == true) {
                             navigationView.getMenu().findItem(R.id.validateConf).setVisible(true);
                         }
@@ -103,7 +133,15 @@ public class MainActivity extends AppCompatActivity
 
                 }
             });
+
+
+
+            userReference.child(fbUser.getUid()).child("userId").setValue(fbUser.getUid());
+
             //Masquage du lien login
+            Fragment ConfFragment = new ConfListFragment();
+            navigateToFragment(ConfFragment);
+
             affichageLogInOut();
 
         }
@@ -112,6 +150,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        Log.i("MAIN ACTIVITY", " ------------- Methode onBackPressed --------------");
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -122,6 +162,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.i("MAIN ACTIVITY", " ------------- Methode onCreateOptionsMenu --------------");
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -129,6 +171,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i("MAIN ACTIVITY", " ------------- Methode onOptionsItemSelected --------------");
+
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -143,6 +187,8 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        Log.i("MAIN ACTIVITY", " ------------- Methode onNavigationItemSelected --------------");
+
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.actionLogin) {
@@ -163,6 +209,8 @@ public class MainActivity extends AppCompatActivity
 
     //lancement de la procédure d'authentification
     public void onLogin(MenuItem item) {
+        Log.i("MAIN ACTIVITY", " ------------- Methode onLogin --------------");
+
         //Définition des fournisseurs d'authentification
         List<AuthUI.IdpConfig> providers = new ArrayList<>();
         providers.add(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
@@ -174,6 +222,8 @@ public class MainActivity extends AppCompatActivity
     //Résultat de l'intention
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("MAIN ACTIVITY", " ------------- Methode onActivityResult --------------");
+
         if (requestCode == LOGIN_REQUESTCODE) {
             //Récupération de la réponse
             IdpResponse response = IdpResponse.fromResultIntent(data);
@@ -227,6 +277,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void affichageLogInOut() {
+        Log.i("MAIN ACTIVITY", " ------------- Methode affichageLogInOut --------------");
+
         //Masquage du lien login
         navigationView.getMenu().findItem(R.id.actionLogin).setVisible(false);
         //Affichage du lien logout
@@ -244,12 +296,13 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
     public void launchValidation(String confId) {
         navigateToFragment(new ConfValidationFragment());
     }
 
     public void onLogout(MenuItem item) {
+        Log.i("MAIN ACTIVITY", " ------------- Methode onLogout --------------");
+
         AuthUI.getInstance().signOut(this).addOnCompleteListener(
                 new OnCompleteListener<Void>() {
                     @Override
@@ -272,6 +325,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void navigateToFragment(Fragment targetFragment) {
+        Log.i("MAIN ACTIVITY", " ------------- Methode navigateToFragment --------------");
+
         getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, targetFragment)
