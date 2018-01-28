@@ -89,9 +89,13 @@
 
             <TextView
                 android:id="@+id/textViewDescriptionView"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_weight="3"
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
+                android:text="ffffffffffffffffffffffffffffffffffffffffffffff"
                 android:textStyle="normal" />
         </TableRow>
 

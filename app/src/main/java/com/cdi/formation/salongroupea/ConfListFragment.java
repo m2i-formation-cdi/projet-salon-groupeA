@@ -3,6 +3,7 @@ package com.cdi.formation.salongroupea;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -48,6 +49,7 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
     private ListView confListView;
     private TextView noResults;
     private Spinner spinnerTheme;
+    private LinearLayout confItemView;
 
     private ConfArrayAdapter adapter;
     private int color = 0;
@@ -239,6 +241,17 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
                 Log.i("CURRENT_USER", "On a pas trouvé de CURRENT_USER");
             }
 
+
+            confItemView = view.findViewById(R.id.confItem);
+
+            color++;
+            if (color % 2 == 1) {
+                confItemView.setBackgroundColor(Color.parseColor("#efefef"));
+            } else {
+                confItemView.setBackgroundColor(Color.parseColor("#ffffff"));
+            }
+//
+
             //Methode insciption et desincsription
             addConfInscription(position, button);
 
@@ -393,15 +406,6 @@ public class ConfListFragment extends Fragment implements AdapterView.OnItemClic
         RatingBar rateConf = view.findViewById(R.id.ratingConf);
         float note = (float) 0.0;
 
-        //LinearLayout confItem = view.findViewById(R.id.confItem);
-
-        //color++;
-        //if (color % 2 == 1) {
-        //    confItem.setBackgroundColor(0x0f0F0f);
-        //} else {
-        //    confItem.setBackgroundColor(0x05F505);
-        //}
-//
         if (currentConf.getDay() != null && currentConf.getComments() != null) {
             for (Comments com : currentConf.getComments()) {
 
